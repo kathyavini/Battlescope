@@ -1,0 +1,60 @@
+:root {
+  /* Catpuccin theme colors */
+  --black: #161320;
+  --black-reduced-opacity: hsl(249, 18%, 22%, 0.4);
+  --white: #d9e0ee;
+  --accent: #abe9b3;
+  --accent1: #ddb6f2;
+  --accent2: #f2cdcd;
+  --accent3: #fae3b0;
+  --accent4: #b5e8e0;
+  --accent5: #96cdfb;
+  --accent6: #c9cbff;
+  --accent7: #f8bd96;
+
+  --dark1: #1a1826;
+  --dark2: #1e1e2e;
+  --dark3: #302d41;
+  --dark4: #575268;
+
+  --light1: #c3bac6;
+  --light2: #988ba2;
+  --light3: #6e6c7e;
+
+
+  /* Theme gradient */
+  --icon-gradient: linear-gradient(
+    70deg,
+    var(--accent3) 0%,
+    var(--accent7) 100%
+  );
+  --icon-fallback: var(--accent7);
+
+  --main-font: 'IBM Plex Mono', monospace;
+  --secondary-font: 'IBM Plex Serif', serif;
+}
+
+body {
+  font-family: var(--main-font);
+  line-height: 2.5;
+  background-color: var(--black);
+  color: var(--white);
+}
+
+.gradient {
+  background-image: var(--icon-gradient);
+  background-color: var(--icon-fallback);
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+/* MEDIA QUERIES */
+
+@media (hover: none) {
+
+}
+
+@media (hover: none) and (orientation: landscape) {
+
+}
