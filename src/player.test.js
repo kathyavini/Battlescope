@@ -1,4 +1,5 @@
-import { createPlayer } from './player';
+/* eslint-disable no-undef */
+import createPlayer from './player';
 
 test('Factory creates object with method makeAttack', () => {
   expect(createPlayer()).toHaveProperty('makeAttack');
@@ -29,19 +30,19 @@ test('Player object assigns reference to enemy gameboard', () => {
 });
 
 test('Player object can attack enemy gameboard', () => {
-    testPlayer.assignEnemyGameboard(mockEnemyBoard);
-    expect(testPlayer.makeAttack([8, 8])).toBe(
-      'Enemy board received attack at row 8, column 8'
-    );
-  });
+  testPlayer.assignEnemyGameboard(mockEnemyBoard);
+  expect(testPlayer.makeAttack([8, 8])).toBe(
+    'Enemy board received attack at row 8, column 8'
+  );
+});
 
 test('AI should return move within bounds of board', () => {
   let aiMoveHistory = [];
   const aiMove = testPlayer.aiPlay();
-  expect(aiMove[0]).toBeGreaterThanOrEqual[0];
-  expect(aiMove[0]).toBeLessThanOrEqual[9];
-  expect(aiMove[1]).toBeGreaterThanOrEqual[0];
-  expect(aiMove[1]).toBeLessThanOrEqual[9];
+  expect(aiMove[0]).toBeGreaterThanOrEqual(0);
+  expect(aiMove[0]).toBeLessThanOrEqual(9);
+  expect(aiMove[1]).toBeGreaterThanOrEqual(0);
+  expect(aiMove[1]).toBeLessThanOrEqual(9);
 
   aiMoveHistory.push({ move: aiMove });
 });
@@ -53,8 +54,6 @@ test('AI should keep record of previous moves', () => {
     const thisMove = newPlayer.aiPlay();
     repeatedMoveHistory.push({ move: thisMove });
   }
-  console.log(repeatedMoveHistory);
-  console.log(newPlayer.previousMoves);
   expect(newPlayer.previousMoves).toEqual(repeatedMoveHistory);
 });
 
@@ -71,16 +70,16 @@ test('AI should not repeat moves', () => {
     const checkMoves = repeatedMoveHistory.filter((turn) => {
       return turn.move[0] === thisMove[0] && turn.move[1] === thisMove[1];
     });
-    if (checkMoves[0]) { 
-        checkMoveHistory.push(checkMoves)
-        moveRepeated = true;
+    if (checkMoves[0]) {
+      checkMoveHistory.push(checkMoves);
+      moveRepeated = true;
     }
     repeatedMoveHistory.push({ move: thisMove });
     i++;
   }
 
-//   console.log(repeatedMoveHistory);
-//   console.log(newPlayer.previousMoves);
+  //   console.log(repeatedMoveHistory);
+  //   console.log(newPlayer.previousMoves);
 
   expect(checkMoveHistory[0]).toBeUndefined();
 });

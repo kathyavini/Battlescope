@@ -1,6 +1,6 @@
 import { createShip } from './ships';
 
-export function createGameboard() {
+export default function createGameboard() {
   // Just FYI these methods don't work; they store reference to same array in each row of the board
   //(1)
   // const boardArray = Array(10).fill(Array(10).fill(null));
@@ -48,13 +48,14 @@ export function createGameboard() {
 
       if (i === 1) {
         boardArray[row][column] = shipMarker;
+        continue;
+      }
+      // } else {
+      if (orientation === 'horizontal') {
+        /* (i - 1) as marker 2 should be one square from start */
+        boardArray[row][column + (i - 1)] = shipMarker;
       } else {
-        if (orientation === 'horizontal') {
-          /* (i - 1) as marker 2 should be one square from start */
-          boardArray[row][column + (i - 1)] = shipMarker;
-        } else {
-          boardArray[row + (i - 1)][column] = shipMarker;
-        }
+        boardArray[row + (i - 1)][column] = shipMarker;
       }
     }
   }
@@ -64,38 +65,31 @@ export function createGameboard() {
 
     if (!valueAtPosition) {
       boardArray[row][column] = 'miss';
-      return
+      return;
     }
-    const hitShip = fleet.filter((ship) => ship.type[0] === valueAtPosition[0])[0];
+    const hitShip = fleet.filter(
+      (ship) => ship.type[0] === valueAtPosition[0]
+    )[0];
     hitShip.hit(valueAtPosition[1]);
     boardArray[row][column] = 'hit';
   }
 
   function isFleetSunk() {
-    /* But { } around the test function breaks the filter? Oh! I need the explicit return in the block body. That was actually my confusion around arrow function syntax. See:
-
-    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#function_body
-    */
     const sunkShips = fleet.filter((ship) => ship.isSunk() === true);
     return sunkShips.length === fleet.length;
   }
 
-  // function getBoardArray() {
-  //   return [...boardArray]
-  // }
-
-  // return Object.freeze(
   return {
     get boardArray() {
-      return boardArray;
+      /* Honestly, it took way too long to figure out that the problem here was that it was an array of arrays and each element needed destructuring! */
+      return boardArray.map((x) => [...x]);
     },
-    // getBoardArray,
-    get fleet() {
-      return fleet;
-    },
-    placeShip, // for testing - should be internal
     receiveAttack,
+    placeShip,
+    // the following are for testing only
+    get fleet() {
+      return [...fleet];
+    },
     isFleetSunk,
   };
-  // )
 }

@@ -1,11 +1,11 @@
-export function createPlayer() {
+export default function createPlayer() {
   let ownBoard;
   let enemyBoard;
 
-  let previousMoves = [];
+  const previousMoves = [];
 
   function makeAttack([row, col]) {
-      return enemyBoard.receiveAttack([row, col])
+    return enemyBoard.receiveAttack([row, col]);
   }
 
   function assignOwnGameboard(gameboard) {
@@ -20,7 +20,7 @@ export function createPlayer() {
     let thisMove = randomMove();
 
     while (playedPreviously(thisMove)) {
-        thisMove = randomMove();
+      thisMove = randomMove();
     }
 
     previousMoves.push({ move: thisMove });
@@ -37,7 +37,9 @@ export function createPlayer() {
   }
 
   function playedPreviously(thisMove) {
-    const checkMoves = previousMoves.filter((turn) => (turn.move[0] === thisMove[0]) && (turn.move[1] === thisMove[1]));
+    const checkMoves = previousMoves.filter(
+      (turn) => turn.move[0] === thisMove[0] && turn.move[1] === thisMove[1]
+    );
 
     if (checkMoves[0]) {
       return true;
@@ -57,7 +59,7 @@ export function createPlayer() {
       return enemyBoard;
     },
     get previousMoves() {
-      return previousMoves;
+      return [...previousMoves];
     },
   };
 }

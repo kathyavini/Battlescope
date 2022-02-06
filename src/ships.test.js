@@ -24,3 +24,17 @@ test('isSunk() returns false if only hit once', () => {
 test('isSunk() returns true if hit length times', () => {
   expect(createShip(3).hit(1).hit(2).hit(3).isSunk()).toBe(true);
 });
+
+test('Getter blocks messing with ship length', () => {
+  function reassignLength() {
+    createShip(2).length = 2
+  }
+  expect(reassignLength).toThrow();
+})
+
+test('Getter blocks messing with ship array', () => {
+  const testShip3 = createShip(3)
+    testShip3.shipArray[1] = 'test value'
+  expect(testShip3.shipArray[1]).toBe(0);
+})
+

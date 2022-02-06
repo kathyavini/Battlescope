@@ -14,13 +14,13 @@ export function createShip(length) {
     }
 
     return {
-        get shipArray(){ // only for testing
-            return shipArray
+        hit,
+        get shipArray(){
+            return [...shipArray]
         },
         get length() {
             return length
         },
-        hit,
         isSunk
     }
 }
