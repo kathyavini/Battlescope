@@ -1,24 +1,6 @@
 import { createShip } from './ships';
 
 export default function createGameboard() {
-  // Just FYI these methods don't work; they store reference to same array in each row of the board
-  //(1)
-  // const boardArray = Array(10).fill(Array(10).fill(null));
-
-  // (2)
-  // const boardRow = Array(10).fill(null);
-  // const boardArray = Array(10).fill([...boardRow]);
-
-  // Could be done with a loop:
-
-  // const boardArray = [];
-  // for (let i = 0; i < 10; i++) {
-  //   let thisRow = Array(10).fill(null);
-  //   boardArray.push(thisRow)
-  // }
-
-  // But this is my favourite
-  // Solution from https://stackoverflow.com/questions/966225/how-can-i-create-a-two-dimensional-array-in-javascript
   const boardArray = Array(10)
     .fill(null)
     .map((x) => Array(10).fill(null));
@@ -43,6 +25,7 @@ export default function createGameboard() {
     createdShip.type = type;
     fleet.push(createdShip);
 
+    /* Mark board array */
     for (let i = 1; i <= shipLength; i++) {
       const shipMarker = type[0] + i;
 
