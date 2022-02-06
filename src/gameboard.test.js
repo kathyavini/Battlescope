@@ -16,7 +16,7 @@ test('Gameboard factory returns an object with board and fleet', () => {
   );
 });
 
-test('Gameboard initialized as a 10 x 10 Array', () => {
+test('Gameboard initialized as a 10 x 10 2D Array', () => {
   expect(testGameboard.boardArray.length).toEqual(10);
   expect(testGameboard.boardArray[0].length).toEqual(10);
 });
@@ -27,14 +27,12 @@ test('Getter correctly reads board array', () => {
 
 /* Do getters make arrays immutable? - answer is no. This was true with return [...boardArray] (return copy) and the function getBoardArray()...
 
-It was also true with Object.freeze() around the return statement, and it was also true with renaming the constant in the get function! This is nuts!
-
-*/
-
+It was also true with Object.freeze() around the return statement, and it was also true with renaming the constant in the get function! This is nuts! */
 test.skip('Getter cannot mutate board array', () => {
   testGameboard.boardArray[0][0] = 'testValue';
   expect(testGameboard.boardArray[0][0]).toBeNull();
 });
+
 
 test('Gameboard adds horizontal ship to board correctly', () => {
   testGameboard.placeShip('patrol boat', [1, 4], 'horizontal');
@@ -79,6 +77,12 @@ test('Gameboard reports fleet sunk correctly', () => {
 
   /* Fresh board :) */
   const newBoard = createGameboard();
+
+
+test('New instances of gameboard do not interfere with each other', () => {
+  expect(newBoard.fleet[0]).toBeUndefined();
+  expect(newBoard.boardArray[7][4]).toBeNull();
+})
 test('Gameboard passes hit to ship correctly', () => {
   newBoard.placeShip('battleship', [1, 1], 'horizontal');
   newBoard.receiveAttack([1, 2]);
