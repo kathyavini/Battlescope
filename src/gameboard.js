@@ -58,6 +58,9 @@ export default function createGameboard() {
     hitShip.hit(valueAtPosition[1]);
     boardArray[row][column] = 'hit';
     publish('hit', [row, column])
+    if (hitShip.isSunk()) {
+      publish('shipSunk', hitShip)
+    }
   }
 
   function isFleetSunk() {

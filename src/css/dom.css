@@ -20,24 +20,51 @@ body {
     align-items: center;
 }
 
+h1 {
+    font-size: clamp(2rem, 2vw + 1rem, 2.5rem);
+}
+
+/* .announce-panel h3 {
+    border: 1px solid greenyellow;
+    width: 100px;
+    height: 50px;
+} */
+
+
+
 .announce-panel {
-    /* border: 1px solid var(--accent5); */
-    height: 4rem;
-    width: 400px;
+    /* border: 1px solid white; */
+    min-height: 5rem;
+    /* width: 400px; */
+    width:100%;
     color: var(--accent5);
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 500ms 500ms color 0ms 250ms;
+    font-size: clamp(1rem, 2vw + 1rem, 1.5rem);;
 }
 .announce-panel.hit {
-    font-size: 2rem;
+    font-size: clamp(1.25rem, 2vw + 1rem, 2rem);;
     color: var(--accent1);
+    text-transform: uppercase;
 }
 
-.announce-panel.win {
+.game-announce.win {
     width: 100%;
-    font-size: 2.5rem;
+    font-size: clamp(1.25rem, 2vw + 1rem, 2.5rem);
     color: var(--accent);
+    opacity: 1;
+    margin-right: 0;
+    text-align: center;
+}
+
+.announce-panel.visible {
+    opacity: 1;
+    transition: opacity 500ms;
+    /* delay is second number gosh */
 }
 
 .play-area {
@@ -50,10 +77,22 @@ body {
     text-align: center;
 }
 
+.play-area section {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
 .board {
+    width: 90vw;
+    max-width: 450px;
+    min-width: 300px;
+    height: 90vw;
+    max-height: 450px;
+    min-height: 300px;
     display: grid;
-    grid-template-rows: repeat(10, 40px);
-    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 1fr);
+    grid-template-columns: repeat(10, 1fr);
     border: 1px solid var(--white);
 }
 
@@ -81,4 +120,25 @@ body {
 .square.hit,
 .own-board .square.ship.hit {
     background-color: var(--accent1);
+}
+
+.sunk-fleet {
+    padding: 20px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.ship-render {
+    display: flex;
+}
+
+.ship-part {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--accent7);
+    background-color: var(--accent1);
+    filter: brightness(.7);
 }
