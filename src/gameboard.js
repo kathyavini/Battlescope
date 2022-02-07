@@ -1,4 +1,5 @@
 import { createShip } from './ships';
+import { publish } from './pubsub'
 
 export default function createGameboard() {
   const boardArray = Array(10)
@@ -48,6 +49,7 @@ export default function createGameboard() {
 
     if (!valueAtPosition) {
       boardArray[row][column] = 'miss';
+      publish('miss', [row, column])
       return;
     }
     const hitShip = fleet.filter(
@@ -55,6 +57,7 @@ export default function createGameboard() {
     )[0];
     hitShip.hit(valueAtPosition[1]);
     boardArray[row][column] = 'hit';
+    publish('hit', [row, column])
   }
 
   function isFleetSunk() {

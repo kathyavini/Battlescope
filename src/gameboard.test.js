@@ -40,7 +40,6 @@ test('Gameboard adds ship to fleet correctly', () => {
 });
 
 test('Getter cannot mutate fleet', () => {
-  console.log(testGameboard.fleet);
   testGameboard.fleet.push({ name: 'fake ship' });
   expect(testGameboard.fleet[3]).toBeUndefined();
 });

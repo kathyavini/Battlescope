@@ -20,6 +20,26 @@ body {
     align-items: center;
 }
 
+.announce-panel {
+    /* border: 1px solid var(--accent5); */
+    height: 4rem;
+    width: 400px;
+    color: var(--accent5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.announce-panel.hit {
+    font-size: 2rem;
+    color: var(--accent1);
+}
+
+.announce-panel.win {
+    width: 100%;
+    font-size: 2.5rem;
+    color: var(--accent);
+}
+
 .play-area {
     display: flex;
     flex-flow: row wrap;
@@ -41,7 +61,16 @@ body {
     border: 1px solid var(--light3);
 }
 
-.square.ship {
+.square:hover {
+    background-color: var(--accent2);
+    opacity: 0.5;
+}
+
+.square:active {
+    filter: brightness(1.2)
+}
+
+.own-board .square.ship {
     background-color: var(--accent);
 }
 
@@ -49,6 +78,7 @@ body {
     background-color: var(--accent5);
 }
 
-.square.hit {
+.square.hit,
+.own-board .square.ship.hit {
     background-color: var(--accent1);
 }

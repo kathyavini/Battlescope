@@ -1,6 +1,7 @@
 import createGameboard from './gameboard';
 import { renderBoard } from './dom';
 import createPlayer from './player';
+import { subscribe, publish } from './pubsub';
 
 export function newGame() {
   const player1 = createPlayer();
@@ -9,14 +10,8 @@ export function newGame() {
   const board1 = createGameboard();
   const board2 = createGameboard();
 
-  player1.assignEnemyGameboard(board2); // 
-  player1.assignOwnGameboard(board1); // 
-
+  player1.assignEnemyGameboard(board2);
   player2.assignEnemyGameboard(board1);
-  player2.assignOwnGameboard(board2); // Possibly unneeded?
-
-  placeDemoShips(board1);
-  placeDemoShips(board2);
 
   return { player1, player2, board1, board2 };
 }
@@ -30,16 +25,57 @@ export function placeDemoShips(board) {
 }
 
 export function demoMoves({ player1, player2, board1, board2 }) {
-  for (let i = 1; i < 10; i++) {
+
+  for (let i = 1; i < 101; i++) {
     setTimeout(() => {
-      player1.makeAttack(player1.aiPlay())
+      /* Can't stick in function as need return to exit the loop */
+      if (board2.isFleetSunk()) {
+        publish('fleetSunk', ['Player 2', 'Player 1']);
+        return
+      } else if (board1.isFleetSunk()) {
+        publish('fleetSunk', ['Player 1', 'Player 2']);
+        return
+      }
+      player1.makeAttack(player1.aiPlay());
       renderBoard(board2.boardArray, 'enemy');
 
       setTimeout(() => {
-        player2.makeAttack(player2.aiPlay())
+        if (board2.isFleetSunk()) {
+          publish('fleetSunk', ['Player2', 'Player1']);
+          return
+        } else if (board1.isFleetSunk()) {
+          publish('fleetSunk', ['Player1', 'Player2']);
+          return
+        }
+        player2.makeAttack(player2.aiPlay());
         renderBoard(board1.boardArray, 'own');
-      }, 1000)
+      }, 15);
+    }, i * 30);
+  }
+}
 
-    }, i * 2500)
+export function aiGameLoop({ player1, player2, board1, board2 }) {
+  subscribe('squareAttacked', humanAttack);
+
+  function humanAttack(target) {
+    if (board1.isFleetSunk()) {
+      publish('fleetSunk', ['Human', 'Computer']);
+      return
+    }
+    player1.makeAttack([target[0], target[1]]);
+
+    renderBoard(board2.boardArray, 'enemy');
+
+
+    setTimeout(() => {
+      if (board2.isFleetSunk()) {
+        publish('fleetSunk', ['Computer', 'Human']);
+        return
+      }
+      player2.makeAttack(player2.aiPlay());
+      renderBoard(board1.boardArray, 'own');
+
+
+    }, 200);
   }
 }
