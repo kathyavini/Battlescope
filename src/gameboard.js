@@ -50,7 +50,7 @@ export default function createGameboard() {
     if (!valueAtPosition) {
       boardArray[row][column] = 'miss';
       publish('miss', [row, column])
-      return;
+      return
     }
     const hitShip = fleet.filter(
       (ship) => ship.type[0] === valueAtPosition[0]
@@ -60,6 +60,7 @@ export default function createGameboard() {
     publish('hit', [row, column])
     if (hitShip.isSunk()) {
       publish('shipSunk', hitShip)
+      boardArray[row][column] = 'sunk'; // newly added for AI; not quite sure about it
     }
   }
 

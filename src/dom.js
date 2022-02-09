@@ -25,12 +25,6 @@ export function createContainers() {
   );
   boardsContainer.append(enemyContainer, ownContainer);
 
-  // const announceDiv = createNewElement('div', ['announce-panel']);
-  // announceDiv.append(
-  //   createNewElement('h3', ['enemy-announce']),
-  //   createNewElement('h3', ['own-announce']),
-  // )
-
   body.append(
     createNewElement('h1', ['title'], 'Battleship'),
     // announceDiv,
@@ -68,7 +62,7 @@ export function renderBoard(board, placement) {
       );
       if (!value) {
         continue;
-      } else if (value === 'hit') {
+      } else if (value === 'hit' || value === 'sunk') {
         boardSquare.classList.add('hit');
       } else if (value === 'miss') {
         boardSquare.classList.add('miss');
@@ -96,10 +90,8 @@ export function makeAnnouncements() {
 
 
   function changePanel(target) {
-
     panel = document.querySelector(`.${target} .announce-panel`);
     fleet = document.querySelector(`.${target} .sunk-fleet`);
-
   }
 
   subscribe('boardChange', changeView);
@@ -130,17 +122,6 @@ export function makeAnnouncements() {
   subscribe('shipSunk', renderSunkShip);
   subscribe('fleetSunk', announceWin);
 
-  // function announceHit([row, column]) {
-  //   setTimeout(() => {
-  //     panel.classList.add('visible');
-  //     panel.classList.add('hit');
-  //     panel.textContent = `A HIT at ${row},${column}!`;
-  //     setTimeout(() => {
-  //       panel.textContent = '';
-  //       panel.classList.remove('hit');
-  //     }, 100)
-  //   }, 50)
-  // }
 
   function announceHit([row, column]) {
     panel.classList.add('visible');
