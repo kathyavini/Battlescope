@@ -81,8 +81,30 @@ test('Gameboard records miss correctly', () => {
   expect(newBoard.boardArray[5][2]).toBe('miss');
 });
 
-test('Gameboard places ship legally', () => {
-  /* I think this will actually be easier once I add the DOM part! */
+describe.only('Legal placement of ships', () => {
+  const shipTestBoard = createGameboard();
+  test('placeShip() throws error if ship is placed out of bounds horizontally', () => {
+    expect(() => {
+      shipTestBoard.placeShip('battleship', [0, 9], 'horizontal');
+    }).toThrow('Ship outside bounds of board');
+  });
+
+  test('placeShip() throws error if ship is placed out of bounds vertically', () => {
+    expect(() => {
+      shipTestBoard.placeShip('destroyer', [9, 0], 'vertical');
+    }).toThrow('Ship outside bounds of board');
+  });
+
+  shipTestBoard.placeShip('destroyer', [0, 0], 'vertical');
+  test('placeShip() throws error if ship is adjacent to another ship', () => {
+    expect(() => {
+      shipTestBoard.placeShip('battleship', [0, 1], 'vertical');
+    }).toThrow('Ship adjacent to another ship');
+  });
+
+  test('placeShip() throws no error on legal placement of ship', () => {
+      expect(() => {
+        shipTestBoard.placeShip('battleship', [0, 2], 'vertical');
+      }).not.toThrow();
+  })
 });
-
-

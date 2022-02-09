@@ -1,5 +1,5 @@
 import { createShip } from './ships';
-import { publish } from './pubsub'
+import { publish } from './pubsub';
 
 export default function createGameboard() {
   const boardArray = Array(10)
@@ -30,15 +30,24 @@ export default function createGameboard() {
     for (let i = 1; i <= shipLength; i++) {
       const shipMarker = type[0] + i;
 
+
       if (i === 1) {
+        testAdjacentCells([row, column], shipMarker);
         boardArray[row][column] = shipMarker;
         continue;
       }
-      // } else {
+
       if (orientation === 'horizontal') {
-        /* (i - 1) as marker 2 should be one square from start */
+        if (column + (i - 1) > 9) {
+          throw 'Ship outside bounds of board';
+        }
+        testAdjacentCells([row, column + (i - 1)], shipMarker)
         boardArray[row][column + (i - 1)] = shipMarker;
       } else {
+        if (row + (i - 1) > 9) {
+          throw 'Ship outside bounds of board';
+        }
+        testAdjacentCells([row + (i - 1), column], shipMarker)
         boardArray[row + (i - 1)][column] = shipMarker;
       }
     }
@@ -49,18 +58,18 @@ export default function createGameboard() {
 
     if (!valueAtPosition) {
       boardArray[row][column] = 'miss';
-      publish('miss', [row, column])
-      return
+      publish('miss', [row, column]);
+      return;
     }
     const hitShip = fleet.filter(
       (ship) => ship.type[0] === valueAtPosition[0]
     )[0];
     hitShip.hit(valueAtPosition[1]);
     boardArray[row][column] = 'hit';
-    publish('hit', [row, column])
+    publish('hit', [row, column]);
     if (hitShip.isSunk()) {
-      publish('shipSunk', hitShip)
-      boardArray[row][column] = 'sunk'; // newly added for AI; not quite sure about it
+      publish('shipSunk', hitShip);
+      boardArray[row][column] = 'sunk';
     }
   }
 
@@ -69,14 +78,44 @@ export default function createGameboard() {
     return sunkShips.length === fleet.length;
   }
 
+  function testAdjacentCells([row, col], shipMarker) {
+    const boundingSquares = defineBoundingBox([row, col]);
+    for (const [sqRow, sqCol] of boundingSquares) {
+      let test = boardArray[sqRow][sqCol];
+      if (test && test[0] !== shipMarker[0]) {
+        throw('Ship adjacent to another ship')
+      }
+    }
+  }
+
+  function defineBoundingBox([row, col]) {
+    const squares = [];
+    // Clockwise circle from top left
+    squares.push(
+      [row - 1, col - 1],
+      [row - 1, col],
+      [row - 1, col + 1],
+      [row, col + 1],
+      [row + 1, col + 1],
+      [row + 1, col],
+      [row + 1, col - 1],
+      [row, col - 1]
+    );
+
+    const withinBoard = squares.filter(([sqRow, sqCol]) => {
+      return sqRow > -1 && sqRow < 10 && sqCol > -1 && sqCol < 10
+    })
+
+    return withinBoard
+  }
+
   return {
     get boardArray() {
-      /* Honestly, it took way too long to figure out that the problem here was that it was an array of arrays and each element needed destructuring! */
+      /* 2D array so each element needs destructuring */
       return boardArray.map((x) => [...x]);
     },
     receiveAttack,
     placeShip,
-    // the following are for testing only
     get fleet() {
       return [...fleet];
     },
