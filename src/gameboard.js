@@ -22,35 +22,78 @@ export default function createGameboard() {
     const shipIndex = shipTypes.indexOf(type);
     const shipLength = shipLengths[shipIndex];
 
-    let createdShip = createShip(shipLength);
-    createdShip.type = type;
-    fleet.push(createdShip);
+    /* Test legality of all positions before marking any */
+    for (let i = 0; i < shipLength; i++) {
+      let testSquare;
+
+      if (orientation === 'horizontal') {
+        testSquare = [row, column + i];
+      } else {
+        testSquare = [row + i, column];
+      }
+
+      if (testSquare[0] > 9 || testSquare[1] > 9) {
+        throw 'Ship outside bounds of board';
+      }
+      if (adjacentShip(testSquare, type)) {
+        throw 'Ship adjacent to another ship';
+      }
+    }
 
     /* Mark board array */
     for (let i = 1; i <= shipLength; i++) {
       const shipMarker = type[0] + i;
 
-
       if (i === 1) {
-        testAdjacentCells([row, column], shipMarker);
         boardArray[row][column] = shipMarker;
         continue;
       }
 
       if (orientation === 'horizontal') {
-        if (column + (i - 1) > 9) {
-          throw 'Ship outside bounds of board';
-        }
-        testAdjacentCells([row, column + (i - 1)], shipMarker)
         boardArray[row][column + (i - 1)] = shipMarker;
       } else {
-        if (row + (i - 1) > 9) {
-          throw 'Ship outside bounds of board';
-        }
-        testAdjacentCells([row + (i - 1), column], shipMarker)
         boardArray[row + (i - 1)][column] = shipMarker;
       }
     }
+
+    let createdShip = createShip(shipLength);
+    createdShip.type = type;
+
+    fleet.push(createdShip);
+    // console.log(fleet);
+  }
+
+  /* Helper functions for testing ship legality */
+  function adjacentShip([row, col], shipMarker) {
+    const boundingSquares = defineBoundingBox([row, col]);
+    for (const [sqRow, sqCol] of boundingSquares) {
+      let test = boardArray[sqRow][sqCol];
+      if (test && test[0] !== shipMarker[0]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function defineBoundingBox([row, col]) {
+    const squares = [];
+    // Clockwise circle from top left
+    squares.push(
+      [row - 1, col - 1],
+      [row - 1, col],
+      [row - 1, col + 1],
+      [row, col + 1],
+      [row + 1, col + 1],
+      [row + 1, col],
+      [row + 1, col - 1],
+      [row, col - 1]
+    );
+
+    const withinBoard = squares.filter(([sqRow, sqCol]) => {
+      return sqRow > -1 && sqRow < 10 && sqCol > -1 && sqCol < 10;
+    });
+
+    return withinBoard;
   }
 
   function receiveAttack([row, column]) {
@@ -76,37 +119,6 @@ export default function createGameboard() {
   function isFleetSunk() {
     const sunkShips = fleet.filter((ship) => ship.isSunk() === true);
     return sunkShips.length === fleet.length;
-  }
-
-  function testAdjacentCells([row, col], shipMarker) {
-    const boundingSquares = defineBoundingBox([row, col]);
-    for (const [sqRow, sqCol] of boundingSquares) {
-      let test = boardArray[sqRow][sqCol];
-      if (test && test[0] !== shipMarker[0]) {
-        throw('Ship adjacent to another ship')
-      }
-    }
-  }
-
-  function defineBoundingBox([row, col]) {
-    const squares = [];
-    // Clockwise circle from top left
-    squares.push(
-      [row - 1, col - 1],
-      [row - 1, col],
-      [row - 1, col + 1],
-      [row, col + 1],
-      [row + 1, col + 1],
-      [row + 1, col],
-      [row + 1, col - 1],
-      [row, col - 1]
-    );
-
-    const withinBoard = squares.filter(([sqRow, sqCol]) => {
-      return sqRow > -1 && sqRow < 10 && sqCol > -1 && sqCol < 10
-    })
-
-    return withinBoard
   }
 
   return {
