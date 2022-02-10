@@ -81,7 +81,7 @@ test('Gameboard records miss correctly', () => {
   expect(newBoard.boardArray[5][2]).toBe('miss');
 });
 
-describe.only('Legal placement of ships', () => {
+describe('Legal placement of ships', () => {
   const shipTestBoard = createGameboard();
   test('placeShip() throws error if ship is placed out of bounds horizontally', () => {
     expect(() => {
@@ -106,5 +106,15 @@ describe.only('Legal placement of ships', () => {
       expect(() => {
         shipTestBoard.placeShip('battleship', [0, 2], 'vertical');
       }).not.toThrow();
+  })
+
+});
+
+describe('Random placement of fleet', () => {
+  const randomPlacementBoard = createGameboard();
+
+  test('placeAllShipRandomly() creates a fleet of exactly one of each kind of ship', () => {
+    randomPlacementBoard.placeAllShipsRandomly()
+    expect(randomPlacementBoard.fleet.length).toBe(5)
   })
 });

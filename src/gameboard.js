@@ -63,6 +63,29 @@ export default function createGameboard() {
     // console.log(fleet);
   }
 
+  // Moved from game module to gameboard module
+  const orientations = ['horizontal', 'vertical'];
+  
+  function randomPosition() {
+    return [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+  }
+
+  function placeAllShipsRandomly() {
+    for (const ship of shipTypes) {
+      attemptPlacement(ship);
+    }
+  }
+
+  function attemptPlacement(ship) {
+    let position = randomPosition();
+    let orientation = orientations[Math.floor(Math.random() * 2)];
+    try {
+      placeShip(ship, position, orientation);
+    } catch (error) {
+      attemptPlacement(ship);
+    }
+  }
+
   /* Helper functions for testing ship legality */
   function adjacentShip([row, col], shipMarker) {
     const boundingSquares = defineBoundingBox([row, col]);
@@ -128,6 +151,7 @@ export default function createGameboard() {
     },
     receiveAttack,
     placeShip,
+    placeAllShipsRandomly,
     get fleet() {
       return [...fleet];
     },
