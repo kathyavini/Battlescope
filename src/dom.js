@@ -27,7 +27,6 @@ export function createContainers() {
 
   body.append(
     createNewElement('h1', ['title'], 'Battleship'),
-    // announceDiv,
     createNewElement('h3', ['game-announce']),
     boardsContainer
   );
@@ -40,7 +39,6 @@ export function createContainers() {
         const div = createNewElement('div', ['square'], null, {
           'data-pos': `${i}${j}`,
         });
-        div.addEventListener('click', clickAttack);
         board.appendChild(div);
       }
     }
@@ -53,45 +51,85 @@ export function createContainers() {
   }
 }
 
-export function renderBoard(board, placement) {
+export function renderBoard(board, section) {
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
       const value = board[i][j];
       const boardSquare = document.querySelector(
-        `.${placement}-board [data-pos="${i}${j}"]`
+        `.${section}-board [data-pos="${i}${j}"]`
       );
       if (!value) {
         continue;
-      } else if (value === 'hit' || value === 'sunk') {
+      } else if (value === 'hit' || value === 'miss') {
+        boardSquare.classList.add(value);
+      } else if (value === 'sunk') {
+        boardSquare.classList.add(value);
         boardSquare.classList.add('hit');
-      } else if (value === 'miss') {
-        boardSquare.classList.add('miss');
-      } else boardSquare.classList.add('ship');
+      } else {
+        boardSquare.classList.add(value);
+        boardSquare.classList.add('ship');
+
+        // THE ANIMALS!
+        boardSquare.classList.add(`${value[0]}`);
+
+        if (value[0] === 'b' && value[1] === '2') {
+          boardSquare.classList.add('tagged');
+        } else if (value[0] === 'c' && value[1] === '3') {
+          boardSquare.classList.add('tagged');
+        } else if ((value[0] === 's' || value[0] === 'd') && value[1] === '2') {
+          boardSquare.classList.add('tagged');
+        } else if (value[0] === 'p' && value[1] === '1') {
+          boardSquare.classList.add('tagged');
+        }
+      }
     }
   }
 }
 
-function clickAttack(ev) {
-  publish('squareAttacked', ev.target.dataset.pos);
+function clickAttack(ev, player) {
+  publish('squareAttacked', [player, ev.target.dataset.pos]);
+
   ev.target.style.pointerEvents = 'none';
+
   ev.target.parentElement.style.pointerEvents = 'none';
+
+  // Controls time until next human click can be registered
   setTimeout(() => {
     ev.target.parentElement.style.pointerEvents = 'initial';
-  }, 1750);
+  }, 15);
 }
 
-export function makeAnnouncements() {
+export function clickListener(player, section) {
+  const targetContainer = document.querySelector(`section.${section}`);
+
+  const targetSquares = targetContainer.querySelectorAll('.square');
+  targetSquares.forEach((square) => {
+    square.addEventListener('click', (ev) => {
+      clickAttack(ev, player);
+    });
+  });
+}
+
+
+
+export function makeAnnouncements(player, section) {
+
+
+
+  const targetContainer = document.querySelector(`section.${section}`);
+
+  // div.addEventListener('click', clickAttack);
+
   let panel;
-  let fleet;
+  let sunkFleet;
   let visibleContainer;
   const gamePanel = document.querySelector('.game-announce');
 
   subscribe('targetChange', changePanel);
 
-
   function changePanel(target) {
     panel = document.querySelector(`.${target} .announce-panel`);
-    fleet = document.querySelector(`.${target} .sunk-fleet`);
+    sunkFleet = document.querySelector(`.${target} .sunk-fleet`);
   }
 
   subscribe('boardChange', changeView);
@@ -105,8 +143,6 @@ export function makeAnnouncements() {
     visibleContainer.classList.add('visible');
   }
 
-
-
   const gamePanels = document.querySelectorAll('.announce-panel');
 
   for (const gamePanel of gamePanels) {
@@ -119,39 +155,64 @@ export function makeAnnouncements() {
   subscribe('hit', announceHit);
   subscribe('miss', announceMiss);
   subscribe('shipSunk', announceSunkShip);
-  subscribe('shipSunk', renderSunkShip);
   subscribe('fleetSunk', announceWin);
-
+  subscribe('shipSunk', renderSunkShip);
 
   function announceHit([row, column]) {
     panel.classList.add('visible');
     panel.classList.add('hit');
-    panel.textContent = `A HIT at ${row},${column}!`;
+    panel.textContent = `Something's been spotted!`;
   }
 
   function announceMiss() {
     panel.classList.add('visible');
-    panel.textContent = `MISS!`;
+    panel.textContent = `Nothing!`;
   }
 
-  function announceSunkShip(hitShip) {
+  function announceSunkShip([hitShip, [row, column]]) {
     panel.classList.add('visible');
-    panel.textContent = `${hitShip.type} has been sunk!!`;
-  }
-
-  function renderSunkShip(hitShip) {
-    const shipRender = createNewElement('div', ['ship-render']);
-    for (let i = 0; i < hitShip.length; i++) {
-      shipRender.appendChild(createNewElement('div', ['ship-part']));
-    }
-    fleet.appendChild(shipRender);
+    const creature = shipMapping[`${hitShip.type}`];
+    panel.textContent = `A ${creature} has been discovered!!`;
   }
 
   function announceWin([loser, winner]) {
     gamePanel.classList.add('win');
-    gamePanel.textContent = `${loser}'s fleet is sunk! ${winner} wins!`;
+    gamePanel.textContent = `${loser}'s wildlife have been revealed! ${winner} wins!`;
+  }
+
+  function renderSunkShip([hitShip, [row, column]]) {
+    const shipRender = createNewElement('div', [
+      'ship-render',
+      `${hitShip.type[0]}`,
+    ]);
+  
+    for (let i = 0; i < hitShip.length; i++) {
+      shipRender.appendChild(createNewElement('div', ['ship-part']));
+    }
+  
+    sunkFleet.appendChild(shipRender);
+  
+    //Mark the ship's board squares on the board as sunk
+    // const sunkShipBoardSquares = document.querySelectorAll(
+    //   `:not(.visible .square) .${hitShip.type[0]}`
+    // );
+  
+    // console.log(sunkShipBoardSquares);
+  
+    // for (const square of sunkShipBoardSquares) {
+    //   square.classList.add('sunk');
+    // }
   }
 }
+
+/* For themeing */
+const shipMapping = {
+  carrier: 'whale',
+  battleship: 'dolphin',
+  destroyer: 'blowfish',
+  submarine: 'narwhal',
+  'patrol boat': 'crab',
+};
 
 export function renderTurnScreen() {
   const boardsContainer = document.querySelector('main');

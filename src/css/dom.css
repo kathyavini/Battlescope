@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  }
+}
 
 html {
     min-width: 100%;
@@ -35,8 +35,8 @@ h1 {
 .announce-panel {
     /* border: 1px solid white; */
     min-height: 5rem;
-    /* width: 400px; */
-    width:100%;
+    width: 500px;
+    height: 100px;
     color: var(--accent5);
     display: flex;
     justify-content: center;
@@ -44,12 +44,12 @@ h1 {
     text-align: center;
     opacity: 0;
     transition: opacity 500ms 500ms color 0ms 250ms;
-    font-size: clamp(1rem, 2vw + 1rem, 1.5rem);;
+    font-size: clamp(1rem, 2vw + 1rem, 1.5rem);
 }
+
 .announce-panel.hit {
-    font-size: clamp(1.25rem, 2vw + 1rem, 2rem);;
+    font-size: clamp(1.25rem, 2vw + 1rem, 2rem);
     color: var(--accent1);
-    text-transform: uppercase;
 }
 
 .game-announce.win {
@@ -75,12 +75,14 @@ h1 {
     row-gap: 50px;
     column-gap: 200px;
     text-align: center;
+    --hit-gradient: radial-gradient(transparent 30%, var(--dark3) 100%);
 }
 
 .play-area section {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
+    flex: 0;
 }
 
 .board {
@@ -94,10 +96,11 @@ h1 {
     grid-template-rows: repeat(10, 1fr);
     grid-template-columns: repeat(10, 1fr);
     border: 1px solid var(--white);
+    background-color: var(--dark3);
 }
 
 .square {
-    border: 1px solid var(--light3);
+    border: 1px solid var(--dark4);
 }
 
 .square:hover {
@@ -110,6 +113,7 @@ h1 {
 }
 
 .own-board .square.ship {
+/* .square.ship { */
     background-color: var(--accent);
 }
 
@@ -117,28 +121,104 @@ h1 {
     background-color: var(--accent5);
 }
 
-.square.hit,
-.own-board .square.ship.hit {
+/* .square.ship.hit {
     background-color: var(--accent1);
-}
+} */
+
+/* .square.ship.sunk {
+    filter: brightness(.4);
+} */
 
 .sunk-fleet {
-    padding: 20px;
+    width: 600px;
+    height: 200px;
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
-    align-items: center;
-    gap: 20px;
+    row-gap: 5px;
 }
 
 .ship-render {
+    flex-shrink: none;
+    flex-grow: none;
+    margin: 20px;
     display: flex;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--light2);
+    border: 1px solid var(--light3);
 }
 
 .ship-part {
-    width: 20px;
-    height: 20px;
-    border: 1px solid var(--accent7);
-    background-color: var(--accent1);
-    filter: brightness(.7);
+    background-color: transparent;
+    width: 40px;
+    height: 40px;
+    /* border: 1px solid var(--accent7); */
+    /* background-color: var(--accent1); */
+    /* filter: brightness(.7); */
+}
+
+.square.ship.hit {
+    background-image: var(--hit-gradient);
+}
+
+.square.ship.tagged {
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+
+.square.ship.tagged.p {
+    background-image: url("../svg/crab-sweet.svg");
+}
+
+.square.ship.hit.p.tagged,
+.ship-render.p {
+    background-image: var(--hit-gradient), url("../svg/crab-sketch.svg");
+}
+
+.square.ship.tagged.s {
+    background-image: url("../svg/narwhal-sweet.svg");
+}
+
+.square.ship.hit.s.tagged,
+.ship-render.s {
+    background-image: var(--hit-gradient), url("../svg/narwhal-front.svg");
+}
+
+.square.ship.tagged.d{
+    background-image: url("../svg/blowfish-side.svg");
+}
+
+.square.ship.hit.d.tagged,
+.ship-render.d  {
+    background-image: var(--hit-gradient), url("../svg/blowfish-front.svg");
+}
+
+
+.square.ship.tagged.b {
+    background-image: url("../svg/dolphin-sweet.svg");
+}
+
+.square.ship.hit.b.tagged,
+.ship-render.b {
+    background-image: var(--hit-gradient), url("../svg/dolphin-cheerful.svg");
+    background-position: right;
+}
+
+.ship-render.b {
+    background-position: center;
+}
+
+.square.ship.tagged.c {
+    background-image: url("../svg/whale-sweet.svg");
+    background-size: contain;
+
+}
+
+.square.ship.hit.c.tagged,
+.ship-render.c {
+    background-image: var(--hit-gradient), url("../svg/whale-front.svg");
+    background-size: contain;
 }
