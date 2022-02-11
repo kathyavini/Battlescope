@@ -1,7 +1,6 @@
 export default function createPlayer() {
   let enemyBoard;
 
-  // using let because adding a setter for testing only
   let previousMoves = [];
   let shipHistory = ''; // for AI conditionals
 
@@ -10,12 +9,12 @@ export default function createPlayer() {
     posDirection: true,
   };
 
-  function makeAttack([row, col]) {
-    return enemyBoard.receiveAttack([row, col]);
-  }
-
   function assignEnemyGameboard(gameboard) {
     enemyBoard = gameboard;
+  }
+
+  function makeAttack([row, col]) {
+    return enemyBoard.receiveAttack([row, col]);
   }
 
   function aiPlay() {
@@ -31,22 +30,23 @@ export default function createPlayer() {
   }
 
   function aiSmartPlay() {
-    if (previousMoves[0]) {
-      evaluateLastMove(); // Reads results from the assigned enemy gameboard object and store in previousMove array
-    }
-
     let thisMove;
 
     if (previousMoves[0]) {
+      evaluateLastMove();
+
       thisMove = smartMove();
+
       while (playedPreviously(thisMove)) {
         const previousResult = playedPreviously(thisMove);
+
         previousMoves.push({ move: thisMove, result: previousResult });
 
         thisMove = smartMove();
       }
     } else {
       thisMove = randomMove();
+
       while (playedPreviously(thisMove)) {
         thisMove = randomMove();
       }
@@ -75,23 +75,21 @@ export default function createPlayer() {
         // smart AI
         return checkMoves[0].result;
       } else {
-        // random AI, original unit tests
+        // random AI; original unit tests
         return true;
       }
     }
     return false;
   }
 
-  /* Gets last move's result from the enemy gameboard, and stores the result in the previousMove array */
   function evaluateLastMove() {
-    let lastMove;
+    const lastMove = previousMoves[previousMoves.length - 1].move;
 
-    if (previousMoves[previousMoves.length - 1]) {
-      lastMove = previousMoves[previousMoves.length - 1].move;
+    // Check this location on the enemy gameboard
+    const foundResult = enemyBoard.boardArray[lastMove[0]][lastMove[1]];
 
-      previousMoves[previousMoves.length - 1].result =
-        enemyBoard.boardArray[lastMove[0]][lastMove[1]];
-    }
+    // And store the result in previousMove array
+    previousMoves[previousMoves.length - 1].result = foundResult;
   }
 
   function smartMove() {
@@ -99,36 +97,40 @@ export default function createPlayer() {
     let lastMove = previousMoves[previousMoves.length - 1];
 
     if (lastMove.result === 'sunk') {
+      // Reset/clear after a ship is sunk
       shipHistory = '';
+
       aiMode.columnAxis = true;
       aiMode.posDirection = true;
 
       return randomMove();
     }
 
-    // Add to history for this ship, stored in string
+    // Add to hit/miss history for this particular attacked ship
     if (shipHistory[0] === 'h' || lastMove.result === 'hit') {
       shipHistory = shipHistory + lastMove.result[0];
     }
 
     // Variables for referencing previous moves
+    // const moves = ['current', 'last', 'secondLast', 'thirdLast', 'fourthLast', 'fifthLast']
     let secondLast;
     let thirdLast;
     let fourthLast;
     let fifthLast;
 
+    const totalMoves = previousMoves.length;
+
     if (shipHistory.length >= 5) {
-      fifthLast = previousMoves[previousMoves.length - 5];
+      fifthLast = previousMoves[totalMoves - 5];
     }
     if (shipHistory.length >= 4) {
-      fourthLast = previousMoves[previousMoves.length - 4];
+      fourthLast = previousMoves[totalMoves - 4];
     }
     if (shipHistory.length >= 3) {
-      thirdLast = previousMoves[previousMoves.length - 3];
+      thirdLast = previousMoves[totalMoves - 3];
     }
-
     if (shipHistory.length >= 2) {
-      secondLast = previousMoves[previousMoves.length - 2];
+      secondLast = previousMoves[totalMoves - 2];
     }
 
     // if last move was successful, carry on
@@ -244,7 +246,7 @@ export default function createPlayer() {
     if (row > 9 && aiMode.columnAxis === true) {
       aiMode.posDirection = false;
     } else if (row < 0) {
-      // i.e. direction already switched
+      // only possible if direction already switched
       aiMode.columnAxis = false;
     } else if (column < 0) {
       aiMode.posDirection = true;
@@ -256,16 +258,15 @@ export default function createPlayer() {
     assignEnemyGameboard,
     aiPlay,
     aiSmartPlay,
-    /* Everything below is internal and was used only for testing */
-
+    // Everything below is internal and was used only for testing
     get enemyBoard() {
       return enemyBoard;
     },
     get previousMoves() {
       return [...previousMoves];
     },
+    // Only for testing would these ever be set
     set previousMoves(historyArray) {
-      // for testing
       previousMoves = historyArray;
     },
     aiMode,

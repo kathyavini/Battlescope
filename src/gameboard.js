@@ -60,20 +60,18 @@ export default function createGameboard() {
     createdShip.type = type;
 
     fleet.push(createdShip);
-    // console.log(fleet);
-  }
-
-  // Moved from game module to gameboard module
-  const orientations = ['horizontal', 'vertical'];
-  
-  function randomPosition() {
-    return [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
   }
 
   function placeAllShipsRandomly() {
     for (const ship of shipTypes) {
       attemptPlacement(ship);
     }
+  }
+  
+  const orientations = ['horizontal', 'vertical'];
+
+  function randomPosition() {
+    return [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
   }
 
   function attemptPlacement(ship) {
@@ -133,8 +131,9 @@ export default function createGameboard() {
     hitShip.hit(valueAtPosition[1]);
     boardArray[row][column] = 'hit';
     publish('hit', [row, column]);
+
     if (hitShip.isSunk()) {
-      publish('shipSunk', hitShip);
+      publish('shipSunk', [hitShip, [row, column]]);
       boardArray[row][column] = 'sunk';
     }
   }

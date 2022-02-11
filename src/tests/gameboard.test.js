@@ -1,4 +1,4 @@
-import createGameboard from './gameboard';
+import createGameboard from '../gameboard';
 
 const testGameboard = createGameboard();
 
@@ -57,6 +57,8 @@ test('Gameboard reports second ship sunk correctly', () => {
   testGameboard.fleet[1].hit(1).hit(2).hit(3);
   expect(testGameboard.fleet[1].isSunk()).toBe(true);
 });
+
+
 
 test('Gameboard reports fleet sunk correctly', () => {
   expect(testGameboard.isFleetSunk()).toBe(true);

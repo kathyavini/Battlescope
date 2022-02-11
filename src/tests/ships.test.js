@@ -1,4 +1,4 @@
-import { createShip } from './ships';
+import { createShip } from '../ships';
 
 test('ship factory returns object with given length', () => {
   expect(createShip(5).length).toBe(5);
@@ -27,14 +27,13 @@ test('isSunk() returns true if hit length times', () => {
 
 test('Getter blocks messing with ship length', () => {
   function reassignLength() {
-    createShip(2).length = 2
+    createShip(2).length = 2;
   }
   expect(reassignLength).toThrow();
-})
+});
 
 test('Getter blocks messing with ship array', () => {
-  const testShip3 = createShip(3)
-    testShip3.shipArray[1] = 'test value'
+  const testShip3 = createShip(3);
+  testShip3.shipArray[1] = 'test value';
   expect(testShip3.shipArray[1]).toBe(0);
-})
-
+});

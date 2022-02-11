@@ -1,5 +1,4 @@
-/* eslint-disable no-undef */
-import createPlayer from './player';
+import createPlayer from '../player';
 
 test('Factory creates object with method makeAttack', () => {
   expect(createPlayer()).toHaveProperty('makeAttack');
@@ -25,7 +24,7 @@ test('Player object can attack enemy gameboard', () => {
   );
 });
 
-describe('The random (original) aiPlay', () => {
+describe('Random aiPlay', () => {
   test('AI should return move within bounds of board', () => {
     let aiMoveHistory = [];
     const aiMove = testPlayer.aiPlay();
@@ -72,7 +71,7 @@ describe('The random (original) aiPlay', () => {
 });
 
 // AI LOGIC WHEN ENCOUNTERING SHIPS
-describe('The deterministic aiSmartPlay', () => {
+describe('Deterministic aiSmartPlay', () => {
   const mockBoardHistory = {
     boardArray: Array(10)
       .fill(null)
@@ -90,12 +89,15 @@ describe('The deterministic aiSmartPlay', () => {
     player.assignEnemyGameboard(mockBoard);
     player.previousMoves = mockHistory;
 
-    // For later tests with more branching
-    let historyString = mockHistory.slice(0, -1).map((x) => x.result[0]).join('')
+    // For later tests with more branching, the AI updates a string with all results since first hit for the current ship being attacked
+    let historyString = mockHistory
+      .slice(0, -1)
+      .map((x) => x.result[0])
+      .join('');
 
-    // Strings start with first hit
+    // These strings start with first hit, but some of the move history arrays below include previous misses
     while (historyString[0] === 'm') {
-      historyString = historyString.slice(1)
+      historyString = historyString.slice(1);
     }
     player.shipHistory = historyString;
 
@@ -175,7 +177,7 @@ describe('The deterministic aiSmartPlay', () => {
 
     const smartPlayer = generatePlayer(mockMoveHistory, mockBoardHistory);
 
-    // From test above
+    // Logged from test above
     smartPlayer.aiMode.columnAxis = false;
     smartPlayer.aiMode.posDirection = false;
 
@@ -212,7 +214,6 @@ describe('The deterministic aiSmartPlay', () => {
 
     const smartPlayer = generatePlayer(mockMoveHistory, mockBoardHistory);
 
-    // From test above
     smartPlayer.aiMode.columnAxis = false;
     smartPlayer.aiMode.posDirection = false;
 
