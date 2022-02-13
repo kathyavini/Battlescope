@@ -248,6 +248,7 @@ describe('Deterministic aiSmartPlay', () => {
       { move: [9, 3], result: 'hit' },
       { move: [9, 2], result: 'miss' },
     ];
+
     updateMockBoard(mockMoveHistory);
 
     const smartPlayer = generatePlayer(mockMoveHistory, mockBoardHistory);
@@ -280,4 +281,23 @@ describe('Deterministic aiSmartPlay', () => {
 
     expect(thisMove).toEqual([9, 6]);
   });
+
+  // This case produced an uncaught exception in actual play 
+  test('Can handle corner case', () => {
+    const mockMoveHistory = [
+      { move: [0, 0], result: 'hit' },
+      { move: [1, 0], result: 'miss' },
+    ];
+
+    updateMockBoard(mockMoveHistory);
+
+    const smartPlayer = generatePlayer(mockMoveHistory, mockBoardHistory);
+
+    smartPlayer.aiMode.columnAxis = true;
+    smartPlayer.aiMode.posDirection = true;
+
+    const thisMove = smartPlayer.aiSmartPlay();
+
+    expect(thisMove).toEqual([0, 1]);
+  })
 });

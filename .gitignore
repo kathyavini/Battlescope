@@ -2,3 +2,4 @@
 dist/main.css
 dist/main.js
 coverage/
+.vscode/

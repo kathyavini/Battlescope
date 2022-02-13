@@ -32,23 +32,22 @@ export default function createPlayer() {
   function aiSmartPlay() {
     let thisMove;
 
-    if (previousMoves[0]) {
+    // First move
+    if (!previousMoves[0]) {
+      thisMove = randomMove();
+      // All subsequent
+    } else {
       evaluateLastMove();
 
       thisMove = smartMove();
 
       while (playedPreviously(thisMove)) {
-        const previousResult = playedPreviously(thisMove);
-
-        previousMoves.push({ move: thisMove, result: previousResult });
-
+        if (shipHistory) {
+          const previousResult = queryPreviousResult(thisMove);
+          // Within the deterministic attack sequence, any previously played move is recorded again as if it is being played now so the sequence can continue
+          previousMoves.push({ move: thisMove, result: previousResult });
+        }
         thisMove = smartMove();
-      }
-    } else {
-      thisMove = randomMove();
-
-      while (playedPreviously(thisMove)) {
-        thisMove = randomMove();
       }
     }
 
@@ -70,25 +69,26 @@ export default function createPlayer() {
       (turn) => turn.move[0] === thisMove[0] && turn.move[1] === thisMove[1]
     );
 
-    if (checkMoves[0]) {
-      if (checkMoves[0].result) {
-        // smart AI
-        return checkMoves[0].result;
-      } else {
-        // random AI; original unit tests
-        return true;
-      }
-    }
+    if (checkMoves[0]) return true;
+
     return false;
+  }
+
+  function queryPreviousResult(thisMove) {
+    const checkMoves = previousMoves.filter(
+      (turn) => turn.move[0] === thisMove[0] && turn.move[1] === thisMove[1]
+    );
+
+    return checkMoves[0].result;
   }
 
   function evaluateLastMove() {
     const lastMove = previousMoves[previousMoves.length - 1].move;
 
-    // Check this location on the enemy gameboard
+    // Result is read off of the enemy gameboard
     const foundResult = enemyBoard.boardArray[lastMove[0]][lastMove[1]];
 
-    // And store the result in previousMove array
+    // And stored in the previousMove array
     previousMoves[previousMoves.length - 1].result = foundResult;
   }
 
@@ -96,8 +96,8 @@ export default function createPlayer() {
     let nextMove;
     let lastMove = previousMoves[previousMoves.length - 1];
 
+    // Reset after a ship is sunk
     if (lastMove.result === 'sunk') {
-      // Reset/clear after a ship is sunk
       shipHistory = '';
 
       aiMode.columnAxis = true;
@@ -106,122 +106,125 @@ export default function createPlayer() {
       return randomMove();
     }
 
-    // Add to hit/miss history for this particular attacked ship
+    // Attack sequence history begins with the first hit on a new ship
     if (shipHistory[0] === 'h' || lastMove.result === 'hit') {
       shipHistory = shipHistory + lastMove.result[0];
     }
 
-    // Variables for referencing previous moves
-    // const moves = ['current', 'last', 'secondLast', 'thirdLast', 'fourthLast', 'fifthLast']
+    // If no history, a ship has not been discovered yet
+    if (!shipHistory) return randomMove();
+
+
+    let [secondLast, thirdLast, fourthLast, fifthLast] =
+      definePreviousMoveVariables();
+
+    /* Conditional logic for Deterministic AI */
+    // Second parameter in the following functions is the previous move in reference to which the next move should be made
+
+    if (lastMove.result === 'hit') {
+      nextMove = continueSamePath(lastMove);
+
+      // If hitting a boundary, calculate correct move to backtrack from
+      if (outOfBounds(nextMove)) {
+        let referenceMove;
+        switch (shipHistory) {
+          case 'hmhh':
+            referenceMove = fourthLast.move;
+            break;
+          case 'hmh':
+            referenceMove = thirdLast.move;
+            break;
+          default:
+            referenceMove = lastMove.move;
+        }
+        switchDirectionAtEdges(nextMove);
+        nextMove = moveAccordingToMode(referenceMove);
+      }
+
+      return nextMove;
+    }
+
+    if (fifthLast && fifthLast.result === 'hit') {
+      return keepAxisSwitchDirection(nextMove, fifthLast);
+    }
+    if (fourthLast && fourthLast.result === 'hit') {
+      return keepAxisSwitchDirection(nextMove, fourthLast);
+    }
+    if (thirdLast && shipHistory === 'hmm') {
+      return switchAxisOrDirection(nextMove, thirdLast);
+    }
+    if (secondLast && secondLast.result === 'hit') {
+      return switchAxisOrDirection(nextMove, secondLast);
+    }
+
+    // A failsafe reset for encountering a condition not listed above (should not be called)
+    console.log('None of the above conditions apply');
+    shipHistory = '';
+    aiMode.columnAxis = true;
+    aiMode.posDirection = true;
+
+    return randomMove();
+  }
+
+  /* smartMove Helper Functions */
+  function definePreviousMoveVariables() {
     let secondLast;
     let thirdLast;
     let fourthLast;
     let fifthLast;
 
-    const totalMoves = previousMoves.length;
-
     if (shipHistory.length >= 5) {
-      fifthLast = previousMoves[totalMoves - 5];
+      fifthLast = previousMoves[previousMoves.length - 5];
     }
     if (shipHistory.length >= 4) {
-      fourthLast = previousMoves[totalMoves - 4];
+      fourthLast = previousMoves[previousMoves.length - 4];
     }
     if (shipHistory.length >= 3) {
-      thirdLast = previousMoves[totalMoves - 3];
+      thirdLast = previousMoves[previousMoves.length - 3];
     }
     if (shipHistory.length >= 2) {
-      secondLast = previousMoves[totalMoves - 2];
+      secondLast = previousMoves[previousMoves.length - 2];
     }
 
-    // if last move was successful, carry on
-    if (lastMove.result === 'hit') {
-      nextMove = moveAccordingToMode(lastMove.move);
+    return [secondLast, thirdLast, fourthLast, fifthLast];
+  }
 
-      // Unless there are boundary issues
-      if (outOfBounds(nextMove) && shipHistory === 'hmhh') {
-        adjustForBounds(nextMove);
-        nextMove = moveAccordingToMode(fourthLast.move);
-      } else if (outOfBounds(nextMove) && shipHistory === 'hmh') {
-        adjustForBounds(nextMove);
-        nextMove = moveAccordingToMode(thirdLast.move);
-      } else if (outOfBounds(nextMove) && shipHistory === 'hm') {
-        adjustForBounds(nextMove);
-        nextMove = moveAccordingToMode(secondLast.move);
-      } else if (outOfBounds(nextMove)) {
-        //simple case
-        adjustForBounds(nextMove);
-        nextMove = moveAccordingToMode(lastMove.move);
-      }
-      return nextMove;
+  function continueSamePath(lastMove) {
+    return moveAccordingToMode(lastMove.move);
+  }
+
+  function keepAxisSwitchDirection(nextMove, referenceMove) {
+    aiMode.posDirection = !aiMode.posDirection;
+    nextMove = moveAccordingToMode(referenceMove.move);
+
+    if (outOfBounds(nextMove)) {
+      switchDirectionAtEdges(nextMove);
+      nextMove = moveAccordingToMode(referenceMove.move);
     }
 
-    // This gets complicated
-    if (fifthLast && fifthLast.result === 'hit') {
-      // Current axis must be correct; switch direction
+    return nextMove;
+  }
+
+  function switchAxisOrDirection(nextMove, referenceMove) {
+    if (aiMode.columnAxis && aiMode.posDirection) {
+      // initial switch upon first miss should be of direction
       aiMode.posDirection = !aiMode.posDirection;
-      nextMove = moveAccordingToMode(fifthLast.move);
-
-      if (outOfBounds(nextMove)) {
-        adjustForBounds(nextMove);
-        nextMove = moveAccordingToMode(fifthLast.move);
-      }
-      return nextMove;
+    } else if (aiMode.columnAxis && !aiMode.posDirection) {
+      // if direction is already switched row axis should be started
+      aiMode.columnAxis = !aiMode.columnAxis;
+      // If ship then missed to side, switch direction
+    } else if (!aiMode.columnAxis && !aiMode.posDirection) {
+      !aiMode.posDirection;
     }
 
-    if (fourthLast && fourthLast.result === 'hit') {
-      // Current axis must be correct; switch direction
-      aiMode.posDirection = !aiMode.posDirection;
-      nextMove = moveAccordingToMode(fourthLast.move);
+    nextMove = moveAccordingToMode(referenceMove.move);
 
-      if (outOfBounds(nextMove)) {
-        adjustForBounds(nextMove);
-        nextMove = moveAccordingToMode(fourthLast.move);
-      }
-      return nextMove;
+    if (outOfBounds(nextMove)) {
+      switchDirectionAtEdges(nextMove);
+      nextMove = moveAccordingToMode(referenceMove.move);
     }
 
-    if (thirdLast && shipHistory === 'hmm') {
-      // Either axis or direction needs to be switched
-      if (aiMode.columnAxis) {
-        // i.e. no boundary hitting
-        aiMode.columnAxis = !aiMode.columnAxis;
-      } else {
-        aiMode.posDirection = !aiMode.posDirection;
-      }
-
-      nextMove = moveAccordingToMode(thirdLast.move);
-
-      if (outOfBounds(nextMove)) {
-        adjustForBounds(nextMove);
-        nextMove = moveAccordingToMode(thirdLast.move);
-      }
-
-      return nextMove;
-    }
-
-    if (secondLast && secondLast.result === 'hit') {
-      // switch direction at the outset
-      if (aiMode.columnAxis && aiMode.posDirection) {
-        aiMode.posDirection = false;
-        nextMove = moveAccordingToMode(secondLast.move);
-      } else {
-        // already switched direction
-        aiMode.columnAxis = false; // now switch axis
-        nextMove = moveAccordingToMode(secondLast.move);
-      }
-
-      if (outOfBounds(nextMove)) {
-        adjustForBounds(nextMove);
-        nextMove = moveAccordingToMode(secondLast.move);
-      }
-      return nextMove;
-    }
-
-    // If not successful, reset
-    shipHistory = '';
-    aiMode.columnAxis = true;
-    aiMode.posDirection = true;
-    return randomMove();
+    return nextMove;
   }
 
   function moveAccordingToMode([row, column]) {
@@ -242,11 +245,15 @@ export default function createPlayer() {
     }
   }
 
-  function adjustForBounds([row, column]) {
+  function switchDirectionAtEdges([row, column]) {
     if (row > 9 && aiMode.columnAxis === true) {
       aiMode.posDirection = false;
-    } else if (row < 0) {
-      // only possible if direction already switched
+    } else if (row < 0 && column == 0) {
+      // ONLY happens with horizontal ship in top right corner
+      aiMode.columnAxis = false;
+      aiMode.posDirection = true;
+    }else if (row < 0) {
+      // if direction has already been switched
       aiMode.columnAxis = false;
     } else if (column < 0) {
       aiMode.posDirection = true;
