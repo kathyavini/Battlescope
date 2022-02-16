@@ -18,26 +18,19 @@ body {
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
+    color: var(--accent);
 }
 
 h1 {
     font-size: clamp(2rem, 2vw + 1rem, 2.5rem);
 }
 
-/* .announce-panel h3 {
-    border: 1px solid greenyellow;
-    width: 100px;
-    height: 50px;
-} */
-
-
 
 .announce-panel {
-    /* border: 1px solid white; */
     min-height: 5rem;
-    width: 500px;
+    width: 600px;
     height: 100px;
-    color: var(--accent5);
+    color: var(--light1);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -53,9 +46,10 @@ h1 {
 }
 
 .game-announce.win {
-    width: 100%;
+    width: 90%;
+    line-height: 4rem;
     font-size: clamp(1.25rem, 2vw + 1rem, 2.5rem);
-    color: var(--accent);
+    color: var(--accent7);
     opacity: 1;
     margin-right: 0;
     text-align: center;
@@ -64,7 +58,6 @@ h1 {
 .announce-panel.visible {
     opacity: 1;
     transition: opacity 500ms;
-    /* delay is second number gosh */
 }
 
 .play-area {
@@ -72,10 +65,9 @@ h1 {
     flex-flow: row wrap;
     justify-content: center;
     align-items: center;
-    row-gap: 50px;
-    column-gap: 200px;
     text-align: center;
-    --hit-gradient: radial-gradient(transparent 30%, var(--dark3) 100%);
+    --hit-gradient: radial-gradient(transparent 30%, var(--sea-dark) 100%);
+    --background-gradient: linear-gradient(130deg, var(--sea-green) 40%, var(--sea-dark) 100%);
 }
 
 .play-area section {
@@ -96,7 +88,7 @@ h1 {
     grid-template-rows: repeat(10, 1fr);
     grid-template-columns: repeat(10, 1fr);
     border: 1px solid var(--white);
-    background-color: var(--dark3);
+    background-color: var(--sea-dark);
 }
 
 .square {
@@ -104,7 +96,7 @@ h1 {
 }
 
 .square:hover {
-    background-color: var(--accent2);
+    background-color: var(--sea-green);
     opacity: 0.5;
 }
 
@@ -114,39 +106,37 @@ h1 {
 
 .own-board .square.ship {
 /* .square.ship { */
-    background-color: var(--accent);
+    /* background-color: var(--sea-green); */
+    background-image: var(--background-gradient);
 }
 
 .square.miss {
-    background-color: var(--accent5);
+    background-color: var(--light1);
 }
 
-/* .square.ship.hit {
-    background-color: var(--accent1);
-} */
-
-/* .square.ship.sunk {
-    filter: brightness(.4);
-} */
+.square.ship.hit {
+    background-color: var(--sea-light);
+}
 
 .sunk-fleet {
-    width: 600px;
-    height: 200px;
+    width: 500px;
+    height: 100px;
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
-    row-gap: 5px;
+    row-gap: 10px;
+    column-gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 100px;
 }
 
 .ship-render {
-    flex-shrink: none;
-    flex-grow: none;
-    margin: 20px;
+    height: 40px;
     display: flex;
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    background-color: var(--light2);
+    background-color: var(--sea-light);
     border: 1px solid var(--light3);
 }
 
@@ -154,71 +144,72 @@ h1 {
     background-color: transparent;
     width: 40px;
     height: 40px;
-    /* border: 1px solid var(--accent7); */
-    /* background-color: var(--accent1); */
-    /* filter: brightness(.7); */
 }
 
 .square.ship.hit {
     background-image: var(--hit-gradient);
 }
 
-.square.ship.tagged {
+.square.ship.tagged,
+.square.ship.sunk {
     background-size: cover;
     background-repeat: no-repeat;
 }
 
-
-.square.ship.tagged.p {
-    background-image: url("../svg/crab-sweet.svg");
+.own-board .square.ship.tagged.p {
+    background-image: url("../svg/beta-fish.svg");
 }
 
-.square.ship.hit.p.tagged,
+.own-board .square.ship.hit.p.tagged,
+.enemy-board .square.ship.hit.p.sunk,
 .ship-render.p {
-    background-image: var(--hit-gradient), url("../svg/crab-sketch.svg");
+    background-image: var(--hit-gradient), url("../svg/beta-fish.svg");
 }
 
-.square.ship.tagged.s {
-    background-image: url("../svg/narwhal-sweet.svg");
+.own-board .square.ship.tagged.s {
+    background-image: url("../svg/seahorse.svg");
 }
 
-.square.ship.hit.s.tagged,
+.own-board .square.ship.hit.s.tagged,
+.enemy-board .square.ship.hit.s.sunk,
 .ship-render.s {
-    background-image: var(--hit-gradient), url("../svg/narwhal-front.svg");
+    background-image: var(--hit-gradient), url("../svg/seahorse.svg");
 }
 
-.square.ship.tagged.d{
-    background-image: url("../svg/blowfish-side.svg");
-}
-
-.square.ship.hit.d.tagged,
-.ship-render.d  {
-    background-image: var(--hit-gradient), url("../svg/blowfish-front.svg");
-}
-
-
-.square.ship.tagged.b {
-    background-image: url("../svg/dolphin-sweet.svg");
-}
-
-.square.ship.hit.b.tagged,
-.ship-render.b {
-    background-image: var(--hit-gradient), url("../svg/dolphin-cheerful.svg");
+.own-board .square.ship.tagged.d {
+    background-image: url("../svg/goldfish.svg");
     background-position: right;
 }
 
-.ship-render.b {
+.own-board .square.ship.hit.d.tagged,
+.enemy-board .square.ship.hit.d.sunk,
+.ship-render.d {
+    background-image: var(--hit-gradient), url("../svg/goldfish.svg");
+    background-position: right;
+}
+
+.ship-render.d {
     background-position: center;
 }
 
-.square.ship.tagged.c {
-    background-image: url("../svg/whale-sweet.svg");
-    background-size: contain;
+.own-board .square.ship.tagged.b{
+    background-image: url("../svg/pufferfish.svg");
 
 }
 
-.square.ship.hit.c.tagged,
+.own-board .square.ship.hit.b.tagged,
+.enemy-board .square.ship.hit.b.sunk,
+.ship-render.b  {
+    background-image: var(--hit-gradient), url("../svg/pufferfish.svg");
+}
+
+
+.own-board .square.ship.tagged.c {
+    background-image: url("../svg/octopus.svg");
+}
+
+.own-board .square.ship.hit.c.tagged,
+.enemy-board .square.ship.hit.c.sunk,
 .ship-render.c {
-    background-image: var(--hit-gradient), url("../svg/whale-front.svg");
-    background-size: contain;
+    background-image: var(--hit-gradient), url("../svg/octopus.svg");
 }

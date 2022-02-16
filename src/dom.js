@@ -11,14 +11,14 @@ export function createContainers() {
   const ownContainer = createNewElement('section', ['own']);
 
   enemyContainer.append(
-    createNewElement('h2', ['enemy-title'], 'Enemy Waters'),
+    createNewElement('h2', ['subtitle', 'enemy-title'], 'Enemy Waters'),
     createNewElement('h3', ['announce-panel']),
     createNewElement('div', ['board', 'enemy-board']),
     createNewElement('div', ['sunk-fleet'])
   );
 
   ownContainer.append(
-    createNewElement('h2', ['own-title'], 'Friendly Waters'),
+    createNewElement('h2', ['subtitle', 'own-title'], 'Friendly Waters'),
     createNewElement('h3', ['announce-panel']),
     createNewElement('div', ['board', 'own-board']),
     createNewElement('div', ['sunk-fleet'])
@@ -26,7 +26,7 @@ export function createContainers() {
   boardsContainer.append(enemyContainer, ownContainer);
 
   body.append(
-    createNewElement('h1', ['title'], 'Battleship'),
+    createNewElement('h1', ['title'], 'Battlescope'),
     createNewElement('h3', ['game-announce']),
     boardsContainer
   );
@@ -42,12 +42,6 @@ export function createContainers() {
         board.appendChild(div);
       }
     }
-  }
-
-  subscribe('fleetSunk', endGame);
-
-  function endGame() {
-    boardsContainer.style.pointerEvents = 'none';
   }
 }
 
@@ -111,19 +105,16 @@ export function clickListener(player, section) {
 }
 
 
-
 export function makeAnnouncements(player, section) {
 
-
-
   const targetContainer = document.querySelector(`section.${section}`);
-
-  // div.addEventListener('click', clickAttack);
 
   let panel;
   let sunkFleet;
   let visibleContainer;
   const gamePanel = document.querySelector('.game-announce');
+  const boardsContainer = document.querySelector('main');
+  const subtitles = document.querySelectorAll('.subtitle');
 
   subscribe('targetChange', changePanel);
 
@@ -172,12 +163,16 @@ export function makeAnnouncements(player, section) {
   function announceSunkShip([hitShip, [row, column]]) {
     panel.classList.add('visible');
     const creature = shipMapping[`${hitShip.type}`];
-    panel.textContent = `A ${creature} has been discovered!!`;
+    panel.textContent = `It's a ${creature}!!`;
   }
 
   function announceWin([loser, winner]) {
     gamePanel.classList.add('win');
-    gamePanel.textContent = `${loser}'s wildlife have been revealed! ${winner} wins!`;
+    gamePanel.textContent = `${loser}'s sea creatures have been found! ${winner} wins!`;
+    boardsContainer.style.pointerEvents = 'none';
+    for (const gamePanel of gamePanels) {
+      gamePanel.style.display = 'none';
+    }
   }
 
   function renderSunkShip([hitShip, [row, column]]) {
@@ -192,26 +187,16 @@ export function makeAnnouncements(player, section) {
   
     sunkFleet.appendChild(shipRender);
   
-    //Mark the ship's board squares on the board as sunk
-    // const sunkShipBoardSquares = document.querySelectorAll(
-    //   `:not(.visible .square) .${hitShip.type[0]}`
-    // );
-  
-    // console.log(sunkShipBoardSquares);
-  
-    // for (const square of sunkShipBoardSquares) {
-    //   square.classList.add('sunk');
-    // }
   }
 }
 
 /* For themeing */
 const shipMapping = {
-  carrier: 'whale',
-  battleship: 'dolphin',
-  destroyer: 'blowfish',
-  submarine: 'narwhal',
-  'patrol boat': 'crab',
+  carrier: 'octopus',
+  battleship: 'pufferfish',
+  destroyer: 'goldfish',
+  submarine: 'seahorse',
+  'patrol boat': 'betta fish',
 };
 
 export function renderTurnScreen() {

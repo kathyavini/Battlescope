@@ -249,7 +249,7 @@ export default function createPlayer() {
     if (row > 9 && aiMode.columnAxis === true) {
       aiMode.posDirection = false;
     } else if (row < 0 && column == 0) {
-      // ONLY happens with horizontal ship in top right corner
+      // ONLY happens with horizontal ship in top left corner
       aiMode.columnAxis = false;
       aiMode.posDirection = true;
     }else if (row < 0) {

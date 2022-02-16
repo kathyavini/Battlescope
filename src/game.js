@@ -27,14 +27,13 @@ export function newGame() {
   renderBoard(board1.boardArray, 'own');
   renderBoard(board2.boardArray, 'enemy');
 
-  // Event listeners to game announce panels
-  // And sunk fleet render
+  // Event listeners to track game events
   makeAnnouncements();
 
   // Type of game:
 
   // demoMoves({ player1, player2, board1, board2 });
-  aiGameLoop({ player1, player2, board1, board2 });
+  playerVsAILoop({ player1, player2, board1, board2 });
   // twoPlayerGameLoop({ player1 });
 }
 
@@ -63,12 +62,12 @@ function demoMoves({ player1, player2, board1, board2 }) {
         publish('targetChange', 'own');
         player2.makeAttack(player2.aiSmartPlay());
         renderBoard(board1.boardArray, 'own');
-      }, 15);
-    }, i * 30);
+      }, 25);
+    }, i * 50);
   }
 }
 
-export function aiGameLoop({ player1, player2, board1, board2 }) {
+export function playerVsAILoop({ player1, player2, board1, board2 }) {
 
   // Make board clickable to human player
   clickListener(player1, 'enemy');

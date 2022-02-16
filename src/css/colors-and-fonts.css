@@ -1,4 +1,9 @@
 :root {
+  /* Ocean creatures */
+  --sea-dark:#000026;
+  --sea-light:#2e0085;
+  --sea-green: #00966a;
+
   /* Catpuccin theme colors */
   --black: #161320;
   --black-reduced-opacity: hsl(249, 18%, 22%, 0.4);

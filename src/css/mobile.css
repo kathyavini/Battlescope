@@ -91,15 +91,19 @@
         width: 100vw;
         height: 3rem;
         line-height: 1.6rem;
-        opacity: 1;
+        /* opacity: 1; */
     }
 
-    /* .board {
+    .subtitle {
+        display: none;
+    }
+
+    .board {
         height: 35vh;
         width: 35vh;
         min-height: 200px;
         min-width: 200px;
-    } */
+    }
 
     /* .play-area h2 {
         display: none;   
