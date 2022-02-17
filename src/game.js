@@ -3,6 +3,7 @@ import {
   makeAnnouncements,
   clickListener,
   renderBoard,
+  renderBoardExperimental,
   renderTurnScreen,
 } from './dom';
 import createPlayer from './player';
@@ -24,8 +25,11 @@ export function newGame() {
   board1.placeAllShipsRandomly();
   board2.placeAllShipsRandomly();
 
+  // renderBoardExperimental(board1, 'own');
+  renderBoardExperimental(board2, 'enemy');
+  
   renderBoard(board1.boardArray, 'own');
-  renderBoard(board2.boardArray, 'enemy');
+  // renderBoard(board2.boardArray, 'enemy');
 
   // Event listeners to track game events
   makeAnnouncements();

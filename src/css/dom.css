@@ -78,17 +78,46 @@ h1 {
 }
 
 .board {
-    width: 90vw;
+    /* width: 90vw;
     max-width: 450px;
     min-width: 300px;
     height: 90vw;
     max-height: 450px;
-    min-height: 300px;
+    min-height: 300px; */
+    width: 450px;
+    height: 450px;
     display: grid;
     grid-template-rows: repeat(10, 1fr);
     grid-template-columns: repeat(10, 1fr);
     border: 1px solid var(--white);
     background-color: var(--sea-dark);
+    position: relative;
+}
+
+/* .board div {
+    z-index: -1;
+} */
+
+.draggable-ship {
+    position: absolute;
+    height: 45px;
+    display: flex;
+    background-color: var(--accent3);
+    border: 1px solid var(--light3);
+    z-index: 10;
+    transform-origin: 22px 22px;
+}
+
+.draggable-ship.rotated {
+    transform: rotate(90deg);
+}
+
+.draggable-ship .ship-part {
+    background-color: transparent;
+    border: 1px solid var(--light3);
+    width: 44px;
+    height: 44px;
+    pointer-events: none;
 }
 
 .square {
@@ -100,12 +129,18 @@ h1 {
     opacity: 0.5;
 }
 
+/* Disabled during drag and drop */
+.square.no-hover:hover {
+    background-color: transparent;
+    opacity: 1;
+}
+
 .square:active {
     filter: brightness(1.2)
 }
 
-.own-board .square.ship {
-/* .square.ship { */
+/* .own-board .square.ship { */
+.square.ship {
     /* background-color: var(--sea-green); */
     background-image: var(--background-gradient);
 }

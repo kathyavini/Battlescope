@@ -113,3 +113,10 @@
         row-gap: 4vh;
     } */
 }
+
+@media (hover: none) {
+    .board {
+        touch-action: pinch-zoom;
+    }
+
+}
