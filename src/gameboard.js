@@ -156,12 +156,5 @@ export default function createGameboard() {
       return [...fleet];
     },
     isFleetSunk,
-    // Don't love it but this is the easiest way to get the drag and drop ship placement working
-    set fleet(array) {
-      fleet = array;
-    },
-    set boardArray(array) {
-      boardArray = array.map((x) => [...x]);
-    }
   };
 }
