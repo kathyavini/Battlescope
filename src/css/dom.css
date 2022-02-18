@@ -153,7 +153,14 @@ h1 {
     background-color: var(--sea-light);
 }
 
+.board-fleet {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
 .sunk-fleet {
+    margin-inline: auto;
     width: 500px;
     height: 100px;
     display: flex;

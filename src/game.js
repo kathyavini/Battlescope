@@ -5,6 +5,7 @@ import {
   renderBoard,
   renderBoardExperimental,
   renderTurnScreen,
+  renderStartScreen
 } from './dom';
 import createPlayer from './player';
 import createGameboard from './gameboard';
@@ -26,10 +27,10 @@ export function newGame() {
   board2.placeAllShipsRandomly();
 
   // renderBoardExperimental(board1, 'own');
-  renderBoardExperimental(board2, 'enemy');
+  // renderBoardExperimental(board2, 'enemy');
   
   renderBoard(board1.boardArray, 'own');
-  // renderBoard(board2.boardArray, 'enemy');
+  renderBoard(board2.boardArray, 'enemy');
 
   // Event listeners to track game events
   makeAnnouncements();
@@ -39,6 +40,9 @@ export function newGame() {
   // demoMoves({ player1, player2, board1, board2 });
   playerVsAILoop({ player1, player2, board1, board2 });
   // twoPlayerGameLoop({ player1 });
+
+  renderTurnScreen();
+  renderStartScreen();
 }
 
 function demoMoves({ player1, player2, board1, board2 }) {
@@ -77,7 +81,7 @@ export function playerVsAILoop({ player1, player2, board1, board2 }) {
   clickListener(player1, 'enemy');
 
   subscribe('squareAttacked', humanAttack);
-  publish('boardChange', 'enemy');
+  // publish('boardChange', 'enemy');
 
   function humanAttack([player, target]) {
     publish('targetChange', 'enemy');
@@ -92,7 +96,7 @@ export function playerVsAILoop({ player1, player2, board1, board2 }) {
     }
 
     setTimeout(() => {
-      publish('boardChange', 'own');
+      // publish('boardChange', 'own');
       publish('targetChange', 'own');
 
       player2.makeAttack(player2.aiSmartPlay());
@@ -104,7 +108,7 @@ export function playerVsAILoop({ player1, player2, board1, board2 }) {
       }
 
       setTimeout(() => {
-        publish('boardChange', 'enemy');
+        // publish('boardChange', 'enemy');
       }, 1500);
     }, 1000);
   }

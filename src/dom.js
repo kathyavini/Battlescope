@@ -9,10 +9,15 @@ export function createContainers() {
   const boardsContainer = createNewElement('main', ['play-area']);
   const enemyContainer = createNewElement('section', ['enemy']);
   const ownContainer = createNewElement('section', ['own']);
+  const enemyBoardFleet = createNewElement('div', ['board-fleet']);
+  const ownBoardFleet = createNewElement('div', ['board-fleet']);
 
   enemyContainer.append(
     createNewElement('h2', ['subtitle', 'enemy-title'], 'Enemy Waters'),
     createNewElement('h3', ['announce-panel']),
+    enemyBoardFleet
+  );
+  enemyBoardFleet.append(
     createNewElement('div', ['board', 'enemy-board']),
     createNewElement('div', ['sunk-fleet'])
   );
@@ -20,9 +25,13 @@ export function createContainers() {
   ownContainer.append(
     createNewElement('h2', ['subtitle', 'own-title'], 'Friendly Waters'),
     createNewElement('h3', ['announce-panel']),
+    ownBoardFleet
+  );
+  ownBoardFleet.append(
     createNewElement('div', ['board', 'own-board']),
     createNewElement('div', ['sunk-fleet'])
   );
+
   boardsContainer.append(enemyContainer, ownContainer);
 
   body.append(
@@ -94,8 +103,7 @@ export function renderBoardExperimental(gameboard, section) {
 
         clearShipFromBoard(thisDragElement, gameboard);
         updateFleet(thisDragElement, gameboard);
-        gameboard.placeShip(type, coords, orientation)
-
+        gameboard.placeShip(type, coords, orientation);
       } catch (error) {
         console.log(error);
         console.log('this was not a legal placement');
@@ -154,7 +162,6 @@ export function renderBoardExperimental(gameboard, section) {
             updateFleet(draggable, gameboard);
 
             gameboard.placeShip(type, coords, newOrientation);
-
           } catch (error) {
             console.log(error);
             console.log('this was not a legal placement');
@@ -165,7 +172,7 @@ export function renderBoardExperimental(gameboard, section) {
   }
 }
 
-// 
+//
 function clearShipFromBoard(updatedShip, gameboard) {
   console.log('clearing');
 
@@ -289,7 +296,7 @@ export function makeAnnouncements(player, section) {
 
   let panel;
   let sunkFleet;
-  let visibleContainer;
+  // let visibleContainer;
   const gamePanel = document.querySelector('.game-announce');
   const boardsContainer = document.querySelector('main');
   const subtitles = document.querySelectorAll('.subtitle');
@@ -301,16 +308,16 @@ export function makeAnnouncements(player, section) {
     sunkFleet = document.querySelector(`.${target} .sunk-fleet`);
   }
 
-  subscribe('boardChange', changeView);
+  // subscribe('boardChange', changeView);
   const containers = document.querySelectorAll('.play-area section');
 
-  function changeView(target) {
-    for (const container of containers) {
-      container.classList.remove('visible');
-    }
-    visibleContainer = document.querySelector(`.${target}`);
-    visibleContainer.classList.add('visible');
-  }
+  // function changeView(target) {
+  //   for (const container of containers) {
+  //     container.classList.remove('visible');
+  //   }
+  //   visibleContainer = document.querySelector(`.${target}`);
+  //   visibleContainer.classList.add('visible');
+  // }
 
   const gamePanels = document.querySelectorAll('.announce-panel');
 
@@ -377,8 +384,7 @@ const shipMapping = {
 };
 
 export function renderTurnScreen() {
-  const boardsContainer = document.querySelector('main');
-  console.log(boardsContainer);
+  const body = document.querySelector('body');
 
   const turnScreen = createNewElement('div', ['turn-screen']);
   turnScreen.append(
@@ -390,5 +396,29 @@ export function renderTurnScreen() {
     createNewElement('button', ['ready-button'], 'Ready')
   );
 
-  boardsContainer.append(turnScreen);
+  body.append(turnScreen);
+}
+
+export function renderStartScreen() {
+  const body = document.querySelector('body');
+
+  const startScreen = createNewElement('div', ['start-screen']);
+  startScreen.append(
+    createNewElement('h1', ['start-title'], 'BattleSCOPE'),
+    createNewElement('div', ['scope']),
+    createNewElement(
+      'h2',
+      ['start-subtitle'],
+      'A friendlier take on the classic game Battleship'
+    ),
+    createNewElement(
+      'p',
+      ['directions'],
+      "DIRECTIONS: Explore your opponent's ocean with your underwater scope. The first to spot all five sea creatures wins! In 2-PLAYER-MODE each turn grants three scope attempts."
+    ),
+    createNewElement('button', ['single-player-button'], '1-Player'),
+    createNewElement('button', ['two-player-button'], '2-Player')
+  );
+
+  body.append(startScreen);
 }
