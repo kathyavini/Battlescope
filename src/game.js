@@ -3,9 +3,10 @@ import {
   makeAnnouncements,
   clickListener,
   renderBoard,
-  renderBoardExperimental,
+  renderDragAndDropBoard,
   renderTurnScreen,
-  renderStartScreen
+  renderStartScreen,
+  renderShipPlacing
 } from './dom';
 import createPlayer from './player';
 import createGameboard from './gameboard';
@@ -26,7 +27,8 @@ export function newGame() {
   board1.placeAllShipsRandomly();
   board2.placeAllShipsRandomly();
 
-  // renderBoardExperimental(board1, 'own');
+  renderShipPlacing();
+  renderDragAndDropBoard(board1);
   // renderBoardExperimental(board2, 'enemy');
   
   renderBoard(board1.boardArray, 'own');

@@ -58,8 +58,6 @@ test('Gameboard reports second ship sunk correctly', () => {
   expect(testGameboard.fleet[1].isSunk()).toBe(true);
 });
 
-
-
 test('Gameboard reports fleet sunk correctly', () => {
   expect(testGameboard.isFleetSunk()).toBe(true);
 });
@@ -105,18 +103,46 @@ describe('Legal placement of ships', () => {
   });
 
   test('placeShip() throws no error on legal placement of ship', () => {
-      expect(() => {
-        shipTestBoard.placeShip('battleship', [0, 2], 'vertical');
-      }).not.toThrow();
-  })
-
+    expect(() => {
+      shipTestBoard.placeShip('battleship', [0, 2], 'vertical');
+    }).not.toThrow();
+  });
 });
 
 describe('Random placement of fleet', () => {
   const randomPlacementBoard = createGameboard();
 
   test('placeAllShipRandomly() creates a fleet of exactly one of each kind of ship', () => {
-    randomPlacementBoard.placeAllShipsRandomly()
-    expect(randomPlacementBoard.fleet.length).toBe(5)
+    randomPlacementBoard.placeAllShipsRandomly();
+    expect(randomPlacementBoard.fleet.length).toBe(5);
+  });
+});
+
+describe.only('Drag and drop helper functions', () => {
+  const dragDropBoard = createGameboard();
+
+  test('clearShipFromBoard removes the correct ship from array', () => {
+    dragDropBoard.placeAllShipsRandomly();
+    dragDropBoard.clearShipFromBoard('battleship');
+    const foundShips = [];
+    dragDropBoard.boardArray.forEach((row) => {
+      const [results] = row.filter((x) => {
+        if (x) return x[0] === 'b';
+      });
+      if (results) foundShips.push(results);
+    });
+    expect(foundShips).toEqual([]);
+  });
+
+  test('clearShipFromFleet removes the correct ship from fleet array', () => {
+    dragDropBoard.clearShipFromFleet('battleship');
+    const foundShips = dragDropBoard.fleet.filter(
+      (x) => x.type === 'battleship'
+    );
+    expect(foundShips).toEqual([]);
+  });
+
+  test('isShipLegal correctly flags adjacent ships', () => {
+    
   })
 });

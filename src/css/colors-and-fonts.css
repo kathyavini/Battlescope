@@ -37,6 +37,10 @@
 
   --main-font: 'IBM Plex Mono', monospace;
   --secondary-font: 'IBM Plex Serif', serif;
+
+  --hit-gradient: radial-gradient(transparent 30%, var(--sea-dark) 100%);
+  /* --background-gradient: linear-gradient(130deg, var(--sea-green) 40%, var(--sea-dark) 100%); */
+  --background-gradient: radial-gradient(transparent 60%, var(--sea-dark) 100%);
 }
 
 body {

@@ -6,7 +6,7 @@ export default function createGameboard() {
     .fill(null)
     .map((x) => Array(10).fill(null));
 
-  const fleet = [];
+  let fleet = [];
 
   /* From Wikipedia */
   const shipLengths = [5, 4, 3, 3, 2];
@@ -23,22 +23,7 @@ export default function createGameboard() {
     const shipLength = shipLengths[shipIndex];
 
     /* Test legality of all positions before marking any */
-    for (let i = 0; i < shipLength; i++) {
-      let testSquare;
-
-      if (orientation === 'horizontal') {
-        testSquare = [row, column + i];
-      } else {
-        testSquare = [row + i, column];
-      }
-
-      if (testSquare[0] > 9 || testSquare[1] > 9) {
-        throw 'Ship outside bounds of board';
-      }
-      if (adjacentShip(testSquare, type)) {
-        throw 'Ship adjacent to another ship';
-      }
-    }
+    isShipLegal(type, shipLength, orientation, [row, column]);
 
     /* Mark board array */
     for (let i = 1; i <= shipLength; i++) {
@@ -63,12 +48,31 @@ export default function createGameboard() {
     fleet.push(createdShip);
   }
 
+  function isShipLegal(type, shipLength, orientation, [row, column]) {
+    for (let i = 0; i < shipLength; i++) {
+      let testSquare;
+
+      if (orientation === 'horizontal') {
+        testSquare = [row, column + i];
+      } else {
+        testSquare = [row + i, column];
+      }
+
+      if (testSquare[0] > 9 || testSquare[1] > 9) {
+        throw 'Ship outside bounds of board';
+      }
+      if (adjacentShip(testSquare, type)) {
+        throw 'Ship adjacent to another ship';
+      }
+    }
+  }
+
   function placeAllShipsRandomly() {
     for (const ship of shipTypes) {
       attemptPlacement(ship);
     }
   }
-  
+
   const orientations = ['horizontal', 'vertical'];
 
   function randomPosition() {
@@ -144,6 +148,32 @@ export default function createGameboard() {
     return sunkShips.length === fleet.length;
   }
 
+  function clearShipFromBoard(type) {
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        if (boardArray[i][j] && boardArray[i][j][0] === type[0]) {
+          boardArray[i][j] = null;
+        }
+      }
+    }
+
+    // Actually I'd love to know why this doesn't work
+
+    // boardArray.forEach(row => {
+    //   row.forEach(value => {
+    //     if (value && value[0] === type[0]) {
+    //       console.log(value)
+    //       value = null; // why aren't you setting?
+    //     }
+    //   })
+    // })
+    // console.log(boardArray);
+  }
+
+  function clearShipFromFleet(type) {
+    fleet = fleet.filter(x => x.type !== type)
+  }
+
   return {
     get boardArray() {
       /* 2D array so each element needs destructuring */
@@ -156,5 +186,9 @@ export default function createGameboard() {
       return [...fleet];
     },
     isFleetSunk,
+    // The following implemented for use by the drag and drop ship placement. Also changed both board and fleet arrays to let instead of const for this
+    isShipLegal,
+    clearShipFromBoard,
+    clearShipFromFleet,
   };
 }

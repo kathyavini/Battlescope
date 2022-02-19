@@ -23,6 +23,7 @@ body {
 
 h1 {
     font-size: clamp(2rem, 2vw + 1rem, 2.5rem);
+    order: 1;
 }
 
 
@@ -53,6 +54,7 @@ h1 {
     opacity: 1;
     margin-right: 0;
     text-align: center;
+    order: 3;
 }
 
 .announce-panel.visible {
@@ -66,8 +68,7 @@ h1 {
     justify-content: center;
     align-items: center;
     text-align: center;
-    --hit-gradient: radial-gradient(transparent 30%, var(--sea-dark) 100%);
-    --background-gradient: linear-gradient(130deg, var(--sea-green) 40%, var(--sea-dark) 100%);
+    order: 4;
 }
 
 .play-area section {
@@ -77,7 +78,8 @@ h1 {
     flex: 0;
 }
 
-.board {
+.board,
+.drag-board {
     /* width: 90vw;
     max-width: 450px;
     min-width: 300px;
@@ -120,7 +122,8 @@ h1 {
     pointer-events: none;
 }
 
-.square {
+.square,
+.drag-square {
     border: 1px solid var(--dark4);
 }
 
@@ -139,9 +142,9 @@ h1 {
     filter: brightness(1.2)
 }
 
-/* .own-board .square.ship { */
-.square.ship {
-    /* background-color: var(--sea-green); */
+.own-board .square.ship {
+/* .square.ship { */
+    background-color: var(--sea-green);
     background-image: var(--background-gradient);
 }
 
@@ -199,7 +202,7 @@ h1 {
 }
 
 .own-board .square.ship.tagged.p {
-    background-image: url("../svg/beta-fish.svg");
+    background-image: var(--background-gradient), url("../svg/beta-fish.svg");
 }
 
 .own-board .square.ship.hit.p.tagged,
@@ -209,7 +212,7 @@ h1 {
 }
 
 .own-board .square.ship.tagged.s {
-    background-image: url("../svg/seahorse.svg");
+    background-image: var(--background-gradient), url("../svg/seahorse.svg");
 }
 
 .own-board .square.ship.hit.s.tagged,
@@ -219,7 +222,7 @@ h1 {
 }
 
 .own-board .square.ship.tagged.d {
-    background-image: url("../svg/goldfish.svg");
+    background-image: var(--background-gradient), url("../svg/goldfish.svg");
     background-position: right;
 }
 
@@ -235,7 +238,7 @@ h1 {
 }
 
 .own-board .square.ship.tagged.b{
-    background-image: url("../svg/pufferfish.svg");
+    background-image: var(--background-gradient), url("../svg/pufferfish.svg");
 
 }
 
@@ -247,7 +250,7 @@ h1 {
 
 
 .own-board .square.ship.tagged.c {
-    background-image: url("../svg/octopus.svg");
+    background-image: var(--background-gradient), url("../svg/octopus.svg");
 }
 
 .own-board .square.ship.hit.c.tagged,

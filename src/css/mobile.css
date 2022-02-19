@@ -11,7 +11,7 @@
     place-items: center;
     gap: 10vh;
     /* border: 1px solid var(--accent6); */
-    /* display: none; */
+    display: none;
     position: absolute;
     top: 0;
     left: 0;
@@ -36,6 +36,7 @@
     z-index: 20;
     display: block;
     padding-top: 5vh;
+    display: none;
 }
 
 .start-title {
@@ -86,6 +87,14 @@ button:active {
     filter: brightness(2);
 }
 
+
+.ship-screen {
+    order: 2;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    text-align: center;
+}
 
 
 /* For mobile */
