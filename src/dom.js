@@ -54,8 +54,6 @@ export function createContainers() {
   }
 }
 
-
-
 export function renderBoard(board, section) {
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
@@ -247,42 +245,41 @@ export function renderStartScreen() {
   body.append(startScreen);
 }
 
-export function renderShipPlacing() {
+export function renderShipPlacing(gameboard) {
   const body = document.querySelector('body');
 
   const shipPlacing = createNewElement('div', ['ship-screen']);
   shipPlacing.append(
-    createNewElement(
-      'h2',
-      ['ship-subtitle'],
-      'Hide your wildlife'
-    ),
+    createNewElement('h2', ['ship-subtitle'], 'Hide your wildlife'),
     createNewElement(
       'p',
       ['directions'],
-      "Drag and drop to move, click to change orientation. Wildlife cannot be directly adjacent to other wildlife"
-    ),
+      'Drag and drop to move, click to change orientation. Wildlife cannot be directly adjacent to other wildlife'
+    )
   );
 
   body.append(shipPlacing);
 
   document.querySelector('main').style.display = 'none';
 
+  /* Create blank board */
   const board = createNewElement('div', ['drag-board']);
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 10; j++) {
-        const div = createNewElement('div', ['drag-square'], null, {
-          'data-pos': `${i}${j}`,
-        });
-        board.appendChild(div);
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) {
+      const div = createNewElement('div', ['drag-square'], null, {
+        'data-pos': `${i}${j}`,
+      });
+      board.appendChild(div);
     }
   }
 
-  shipPlacing.appendChild(board)
+  shipPlacing.appendChild(board);
+
+  placeDraggableShips(gameboard);
+  dragDropEventListeners(gameboard);
 }
 
-
-export function renderDragAndDropBoard(gameboard) {
+function dragDropEventListeners(gameboard) {
   // Drag and drop event listeners
   let thisDragElement;
 
@@ -307,6 +304,7 @@ export function renderDragAndDropBoard(gameboard) {
     ev.preventDefault();
   });
 
+  // Drag and drop to update position
   document.addEventListener('drop', (ev) => {
     ev.preventDefault();
 
@@ -325,24 +323,22 @@ export function renderDragAndDropBoard(gameboard) {
         gameboard.isShipLegal(type, length, orientation, coords);
         console.log('this was a legal placement');
 
+        updateGameboard(gameboard, type, coords, orientation);
+
         thisDragElement.parentNode.removeChild(thisDragElement);
         ev.target.appendChild(thisDragElement);
 
         thisDragElement.dataset.pos = ev.target.dataset.pos;
-
-        gameboard.clearShipFromBoard(thisDragElement.dataset.type);
-        gameboard.clearShipFromFleet(thisDragElement.dataset.type);
-
-        gameboard.placeShip(type, coords, orientation);
       } catch (error) {
         console.log(error);
         console.log('this was not a legal placement');
       }
-
-      // console.log(thisDragElement.dataset);
     }
   });
+}
 
+/* Put draggable elements at each ship location */
+function placeDraggableShips(gameboard) {
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
       const value = gameboard.boardArray[i][j];
@@ -359,6 +355,7 @@ export function renderDragAndDropBoard(gameboard) {
 
         boardSquare.appendChild(draggable);
 
+        // Click to change orientation event listener
         draggable.addEventListener('click', (ev) => {
           ev.stopPropagation();
 
@@ -367,31 +364,25 @@ export function renderDragAndDropBoard(gameboard) {
           if (ev.target.dataset.orientation === 'vertical') {
             newOrientation = 'horizontal';
           } else {
-            newOrientation = 'vertical';
+            console.log("changing to vertical")
           }
-
           const coords = [
             +draggable.parentNode.dataset.pos[0],
             +draggable.parentNode.dataset.pos[1],
           ];
-
           const type = draggable.dataset.type;
+          const length = draggable.dataset.length;
 
-          console.log(type, coords, newOrientation);
+          console.log(coords, type, newOrientation);
 
-          // I do wish I had written a function "is legal placement" instead of throwing an error within place ship... this makes it a lot harder. OK I DID THAT
           try {
             gameboard.isShipLegal(type, length, newOrientation, coords);
-
             console.log('this was a legal placement');
+    
+            updateGameboard(gameboard, type, coords, newOrientation);
 
-            gameboard.clearShipFromBoard(draggable.dataset.type);
-            gameboard.clearShipFromFleet(draggable.dataset.type);
-            // updateFleet(draggable, gameboard);
-
-            gameboard.placeShip(type, coords, newOrientation);
-            ev.target.classList.toggle('rotated');
-            ev.target.dataset.orientation = newOrientation;
+            draggable.classList.toggle('rotated');
+            draggable.dataset.orientation = newOrientation;
           } catch (error) {
             console.log(error);
             console.log('this was not a legal placement');
@@ -402,40 +393,6 @@ export function renderDragAndDropBoard(gameboard) {
   }
 }
 
-//
-// function clearShipFromBoard(updatedShip, gameboard) {
-//   console.log('clearing');
-
-//   let newBoard = gameboard.boardArray;
-//   console.log(newBoard);
-
-//   for (let i = 0; i < 10; i++) {
-//     for (let j = 0; j < 10; j++) {
-//       let value = newBoard[i][j];
-
-//       if (!value) {
-//         continue;
-//       } else if (value[0] === updatedShip.dataset.type[0]) {
-//         console.log('Cleared value: ' + value);
-//         value = null;
-//       }
-//     }
-//   }
-//   console.log(newBoard);
-//   // added a setter to gameboard for this
-//   gameboard.boardArray = newBoard;
-// }
-
-// For orientation; actually not needed until the end, right?
-function updateFleet(updatedShip, gameboard) {
-  let newFleet = gameboard.fleet;
-  const targetShip = newFleet.filter(
-    (x) => (x.type = updatedShip.dataset.type)
-  );
-
-  console.log(targetShip);
-  console.log(gameboard.fleet);
-}
 
 function renderDraggableShip(ship) {
   const shipRender = createNewElement(
@@ -459,4 +416,12 @@ function renderDraggableShip(ship) {
   }
 
   return shipRender;
+}
+
+function updateGameboard(gameboard, type, coords, orientation) {
+  console.log("Gameboard being updated now")
+  gameboard.clearShipFromBoard(type);
+  gameboard.clearShipFromFleet(type);
+  gameboard.placeShip(type, coords, orientation);
+  console.log(gameboard.fleet);
 }

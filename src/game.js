@@ -27,8 +27,8 @@ export function newGame() {
   board1.placeAllShipsRandomly();
   board2.placeAllShipsRandomly();
 
-  renderShipPlacing();
-  renderDragAndDropBoard(board1);
+  renderShipPlacing(board1);
+  // renderDragAndDropBoard(board1);
   // renderBoardExperimental(board2, 'enemy');
   
   renderBoard(board1.boardArray, 'own');
