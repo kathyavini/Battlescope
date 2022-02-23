@@ -80,12 +80,6 @@ h1 {
 
 .board,
 .drag-board {
-    /* width: 90vw;
-    max-width: 450px;
-    min-width: 300px;
-    height: 90vw;
-    max-height: 450px;
-    min-height: 300px; */
     width: 450px;
     height: 450px;
     display: grid;
@@ -99,32 +93,35 @@ h1 {
 
 .drag-board {
     margin-inline: auto;
-    margin-top: 7vh;
+    margin-top: 4vh;
     margin-bottom: 3vh;
 }
 
 .draggable-ship.ship-render {
-    height: 44px;
+    height: 45px;
     position: absolute;
     display: flex;
-    /* background-color: var(--accent3); */
-    /* border: 1px solid var(--light3); */
     z-index: 10;
     transform-origin: 22px 22px;
-    border: 2px solid var(--accent3);
+    outline: 2px solid var(--accent3);
+    outline-offset: -1px;
     transform: translate(-1px, -1px);
+    will-change: transform, opacity;
+    border: none;
 }
 
 .draggable-ship.rotated {
-    transform: translate(-1px, -1px) rotate(90deg);
+    transform: rotate(90deg);
 }
 
 .draggable-ship .ship-part {
     background-color: transparent;
-    border: 1px solid var(--light3);
-    width: 44px;
-    height: 44px;
+    outline: 1px solid var(--light3);
+    outline-offset: -1px;
+    width: 45px;
+    height: 45px;
     pointer-events: none;
+    z-index: -1;
 }
 
 .square,
@@ -144,7 +141,7 @@ h1 {
 }
 
 .square:active {
-    filter: brightness(1.2)
+    filter: brightness(1.2);
 }
 
 .own-board .square.ship {

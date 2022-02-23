@@ -247,6 +247,10 @@ export function renderStartScreen() {
 
 export function renderShipPlacing(gameboard) {
   const body = document.querySelector('body');
+  const title = document.querySelector('.title');
+  title.classList.add('hidden'); // only mobile
+  const html = document.querySelector('html');
+  html.classList.add('dragging'); // overflow: hidden on mobile
 
   const shipPlacing = createNewElement('div', ['ship-screen']);
   shipPlacing.append(

@@ -10,7 +10,6 @@
     justify-content: flex-start;
     place-items: center;
     gap: 10vh;
-    /* border: 1px solid var(--accent6); */
     display: none;
     position: absolute;
     top: 0;
@@ -25,15 +24,11 @@
 
 .turn-instructions,
 .directions {
-    width: 95%;
+    width: 85%;
     max-width: 800px;
     margin-inline: auto;
     color: var(--accent2);
 }
-/* 
-.ship-screen .directions {
-    margin-bottom: 5vh;
-} */
 
 .ship-subtitle {
     color: var(--accent6);
@@ -99,9 +94,6 @@ button:active {
 
 .ship-screen {
     order: 2;
-    /* display: flex;
-    flex-flow: column nowrap;
-    align-items: center; */
     text-align: center;
 }
 
@@ -114,22 +106,27 @@ button:active {
         overflow-x: hidden;
         overflow-y: auto;
     }
+
+    html.dragging {
+        overflow-y: hidden;
+    }
     
     body {
         height: 100%;
         width: 100%;
         overflow-x: hidden;
-        overflow-y: hidden;
         overflow-y: auto;
-        /* scroll-snap-type: y mandatory; */
     }
+
+    .title.hidden {
+        display: none;
+    } 
 
     .play-area {
         height: 95vh;
         margin-bottom: 5vh;
         width: 95vw;
         scroll-snap-align: start;
-        /* display: none; */
     }
 
     .play-area section {
@@ -182,6 +179,13 @@ button:active {
         margin-block: 20px;
     }
 
+    .ship-screen {
+        padding-top: 5vh;
+        width: 95vw;
+        height: 95vh;
+    }
+
+
     .ship-screen button {
         display: inline-block;
     }
@@ -189,21 +193,19 @@ button:active {
     .drag-board {
         height: 300px;
         width: 300px;
+        margin-bottom: 2vh;
+        margin-top: 3vh;
     }
     
     .draggable-ship.ship-render {
-        /* border: 2px solid var(--accent3);
-        display: flex; */
-        height: 29px;
+        height: 30px;
         position: absolute;
-        transform: translate(-1px,-1px);
-        transform-origin: 14px 14px;
-        /* z-index: 10; */
+        transform-origin: 15px 15px;
     }
 
     .draggable-ship .ship-part {
-        height: 29px;
-        width: 29px;
+        height: 30px;
+        width: 30px;
     }
 
     .draggable-ship.rotated {
@@ -213,9 +215,8 @@ button:active {
 }
 
 @media (hover: none) {
-    .drag-board,
-    .board {
+    .board,
+    .drag-board {
         touch-action: pinch-zoom;
     }
-
 }
