@@ -94,24 +94,29 @@ h1 {
     border: 1px solid var(--white);
     background-color: var(--sea-dark);
     position: relative;
+    order: 1;
 }
 
-/* .board div {
-    z-index: -1;
-} */
+.drag-board {
+    margin-inline: auto;
+    margin-top: 7vh;
+    margin-bottom: 3vh;
+}
 
-.draggable-ship {
+.draggable-ship.ship-render {
+    height: 44px;
     position: absolute;
-    height: 45px;
     display: flex;
-    background-color: var(--accent3);
-    border: 1px solid var(--light3);
+    /* background-color: var(--accent3); */
+    /* border: 1px solid var(--light3); */
     z-index: 10;
     transform-origin: 22px 22px;
+    border: 2px solid var(--accent3);
+    transform: translate(-1px, -1px);
 }
 
 .draggable-ship.rotated {
-    transform: rotate(90deg);
+    transform: translate(-1px, -1px) rotate(90deg);
 }
 
 .draggable-ship .ship-part {

@@ -30,6 +30,14 @@
     margin-inline: auto;
     color: var(--accent2);
 }
+/* 
+.ship-screen .directions {
+    margin-bottom: 5vh;
+} */
+
+.ship-subtitle {
+    color: var(--accent6);
+}
 
 
 .start-screen {
@@ -57,7 +65,8 @@
     color: var(--accent6);
 }
 
-.start-screen button {
+.start-screen button,
+.ship-screen button {
     font-size: 1rem;
     margin: 20px;
 }
@@ -90,9 +99,9 @@ button:active {
 
 .ship-screen {
     order: 2;
-    display: flex;
+    /* display: flex;
     flex-flow: column nowrap;
-    align-items: center;
+    align-items: center; */
     text-align: center;
 }
 
@@ -165,27 +174,48 @@ button:active {
         min-width: 200px;
     }
 
-    .start-screen button {
+    .start-screen button,
+    .ship-screen button {
         width: 100px;
         padding: 20px 40px 20px 40px;
         margin-inline: 10px;
         margin-block: 20px;
     }
 
-    
-
-    /* .play-area h2 {
-        display: none;   
+    .ship-screen button {
+        display: inline-block;
     }
 
-    .play-area {
-        row-gap: 4vh;
-    } */
+    .drag-board {
+        height: 300px;
+        width: 300px;
+    }
+    
+    .draggable-ship.ship-render {
+        /* border: 2px solid var(--accent3);
+        display: flex; */
+        height: 29px;
+        position: absolute;
+        transform: translate(-1px,-1px);
+        transform-origin: 14px 14px;
+        /* z-index: 10; */
+    }
+
+    .draggable-ship .ship-part {
+        height: 29px;
+        width: 29px;
+    }
+
+    .draggable-ship.rotated {
+        transform: rotate(90deg);
+    }
+
 }
 
 @media (hover: none) {
-    /* .board {
+    .drag-board,
+    .board {
         touch-action: pinch-zoom;
-    } */
+    }
 
 }
