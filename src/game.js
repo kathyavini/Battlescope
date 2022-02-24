@@ -6,7 +6,7 @@ import {
   renderDragAndDropBoard,
   renderTurnScreen,
   renderStartScreen,
-  renderShipPlacing
+  renderShipScreen,
 } from './dom';
 import createPlayer from './player';
 import createGameboard from './gameboard';
@@ -27,26 +27,29 @@ export function newGame() {
   board1.placeAllShipsRandomly();
   board2.placeAllShipsRandomly();
 
-  renderShipPlacing(board1);
   // renderDragAndDropBoard(board1);
   // renderBoardExperimental(board2, 'enemy');
-  
-  renderBoard(board1.boardArray, 'own');
-  renderBoard(board2.boardArray, 'enemy');
 
   // Event listeners to track game events
   makeAnnouncements();
 
   // Type of game:
 
+  
   // demoMoves({ player1, player2, board1, board2 });
-  playerVsAILoop({ player1, player2, board1, board2 });
-  // twoPlayerGameLoop({ player1 });
+  playerVsAILoop({ player1, player2, board1, board2 })
+  // twoPlayerGameLoop({ player1, player2, board1, board2 })
+
 
   renderTurnScreen();
   renderStartScreen();
+
+  renderShipScreen(board1);
+  // renderBoard(board1.boardArray, 'own'); // called inside renderShipScreen when drag/dropping
+  renderBoard(board2.boardArray, 'enemy');
 }
 
+// AI vs AI - Just for testing overall flow
 function demoMoves({ player1, player2, board1, board2 }) {
   for (let i = 1; i < 101; i++) {
     setTimeout(() => {
@@ -78,12 +81,10 @@ function demoMoves({ player1, player2, board1, board2 }) {
 }
 
 export function playerVsAILoop({ player1, player2, board1, board2 }) {
-
   // Make board clickable to human player
   clickListener(player1, 'enemy');
 
   subscribe('squareAttacked', humanAttack);
-  // publish('boardChange', 'enemy');
 
   function humanAttack([player, target]) {
     publish('targetChange', 'enemy');
@@ -98,7 +99,6 @@ export function playerVsAILoop({ player1, player2, board1, board2 }) {
     }
 
     setTimeout(() => {
-      // publish('boardChange', 'own');
       publish('targetChange', 'own');
 
       player2.makeAttack(player2.aiSmartPlay());
@@ -109,9 +109,7 @@ export function playerVsAILoop({ player1, player2, board1, board2 }) {
         return;
       }
 
-      setTimeout(() => {
-        // publish('boardChange', 'enemy');
-      }, 1500);
+      setTimeout(() => {}, 1500);
     }, 1000);
   }
 }
@@ -121,5 +119,5 @@ export function twoPlayerGameLoop({ player1, player2, board1, board2 }) {
 }
 
 export function giveUp() {
-  console.log("it's been a rough coding day/night")
+  console.log("it's been a rough coding day/night");
 }

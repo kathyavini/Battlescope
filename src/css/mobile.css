@@ -10,7 +10,6 @@
     justify-content: flex-start;
     place-items: center;
     gap: 10vh;
-    display: none;
     position: absolute;
     top: 0;
     left: 0;
@@ -18,8 +17,8 @@
     text-align: center;
 }
 
-.turn-screen.visible {
-    display: flex;
+.turn-screen {
+    display: none;
 }
 
 .turn-instructions,
@@ -39,7 +38,6 @@
     z-index: 20;
     display: block;
     padding-top: 5vh;
-    display: none;
 }
 
 .start-title {
@@ -127,6 +125,7 @@ button:active {
         margin-bottom: 5vh;
         width: 95vw;
         scroll-snap-align: start;
+        flex-flow: column nowrap;
     }
 
     .play-area section {
@@ -158,6 +157,7 @@ button:active {
         width: 100vw;
         height: 1.5rem;
         line-height: 1.6rem;
+        min-height: 3.5rem;
     }
 
     .subtitle {
@@ -172,11 +172,16 @@ button:active {
     }
 
     .start-screen button,
-    .ship-screen button {
+    .ship-screen button,
+    .game-announce button {
         width: 100px;
         padding: 20px 40px 20px 40px;
-        margin-inline: 10px;
         margin-block: 20px;
+    }
+
+    .start-screen button,
+    .ship-screen button {
+        margin-inline: 10px;
     }
 
     .ship-screen {

@@ -4,6 +4,15 @@ import './css/mobile.css';
 import { createNewElement } from './utils';
 import { subscribe, publish } from './pubsub';
 
+/* For themeing */
+const shipMapping = {
+  carrier: 'octopus',
+  battleship: 'pufferfish',
+  destroyer: 'goldfish',
+  submarine: 'seahorse',
+  'patrol boat': 'betta fish',
+};
+
 export function createContainers() {
   const body = document.querySelector('body');
   const boardsContainer = createNewElement('main', ['play-area']);
@@ -99,7 +108,7 @@ function clickAttack(ev, player) {
   // Controls time until next human click can be registered
   setTimeout(() => {
     ev.target.parentElement.style.pointerEvents = 'initial';
-  }, 15);
+  }, 500);
 }
 
 export function clickListener(player, section) {
@@ -118,7 +127,6 @@ export function makeAnnouncements(player, section) {
 
   let panel;
   let sunkFleet;
-  // let visibleContainer;
   const gamePanel = document.querySelector('.game-announce');
   const boardsContainer = document.querySelector('main');
   const subtitles = document.querySelectorAll('.subtitle');
@@ -130,16 +138,7 @@ export function makeAnnouncements(player, section) {
     sunkFleet = document.querySelector(`.${target} .sunk-fleet`);
   }
 
-  // subscribe('boardChange', changeView);
-  const containers = document.querySelectorAll('.play-area section');
-
-  // function changeView(target) {
-  //   for (const container of containers) {
-  //     container.classList.remove('visible');
-  //   }
-  //   visibleContainer = document.querySelector(`.${target}`);
-  //   visibleContainer.classList.add('visible');
-  // }
+  // const containers = document.querySelectorAll('.play-area section');
 
   const gamePanels = document.querySelectorAll('.announce-panel');
 
@@ -177,9 +176,17 @@ export function makeAnnouncements(player, section) {
     gamePanel.classList.add('win');
     gamePanel.textContent = `${loser}'s sea creatures have been found! ${winner} wins!`;
     boardsContainer.style.pointerEvents = 'none';
-    for (const gamePanel of gamePanels) {
-      gamePanel.style.display = 'none';
-    }
+    // for (const gamePanel of gamePanels) {
+    //   gamePanel.style.display = 'none';
+    // }
+    const playAgain = createNewElement('button', ['play-again'], 'Play Again');
+
+    playAgain.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      location.reload()
+    })
+
+    gamePanel.appendChild(playAgain)
   }
 
   function renderSunkShip([hitShip, [row, column]]) {
@@ -195,15 +202,6 @@ export function makeAnnouncements(player, section) {
     sunkFleet.appendChild(shipRender);
   }
 }
-
-/* For themeing */
-const shipMapping = {
-  carrier: 'octopus',
-  battleship: 'pufferfish',
-  destroyer: 'goldfish',
-  submarine: 'seahorse',
-  'patrol boat': 'betta fish',
-};
 
 export function renderTurnScreen() {
   const body = document.querySelector('body');
@@ -223,6 +221,12 @@ export function renderTurnScreen() {
 
 export function renderStartScreen() {
   const body = document.querySelector('body');
+  const player1 = createNewElement(
+    'button',
+    ['single-player-button'],
+    '1-Player'
+  );
+  const player2 = createNewElement('button', ['two-player-button'], '2-Player');
 
   const startScreen = createNewElement('div', ['start-screen']);
   startScreen.append(
@@ -238,35 +242,40 @@ export function renderStartScreen() {
       ['directions'],
       "DIRECTIONS: Explore your opponent's ocean with your underwater scope. The first to spot all five sea creatures wins! In 2-PLAYER-MODE each turn grants three scope attempts."
     ),
-    createNewElement('button', ['single-player-button'], '1-Player'),
-    createNewElement('button', ['two-player-button'], '2-Player')
+    player1,
+    player2
   );
 
   body.append(startScreen);
+
+  // Also has an event listener on the game side...
+  player1.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    startScreen.style.display = 'none';
+  });
 }
 
-export function renderShipPlacing(gameboard) {
-  const body = document.querySelector('body');
-  const title = document.querySelector('.title');
-  title.classList.add('hidden'); // only mobile
-  const html = document.querySelector('html');
-  html.classList.add('dragging'); // overflow: hidden on mobile
+export function renderShipScreen(gameboard) {
+  document.querySelector('main').style.display = 'none';
+  document.querySelector('.title').classList.add('hidden'); // only mobile
+  document.querySelector('html').classList.add('dragging'); // overflow: hidden on mobile
 
-  const shipPlacing = createNewElement('div', ['ship-screen']);
-  shipPlacing.append(
+  const randomize = createNewElement('button', ['randomize'], 'Randomize');
+  const start = createNewElement('button', ['start'], 'Start');
+
+  const shipScreen = createNewElement('div', ['ship-screen']);
+  shipScreen.append(
     createNewElement('h2', ['ship-subtitle'], 'Hide your wildlife'),
     createNewElement(
       'p',
       ['directions'],
-      'Drag and drop to move, click to change orientation. Wildlife cannot be directly adjacent to other wildlife'
+      'Drag and drop to move, click to change orientation. Wildlife cannot be adjacent to other wildlife'
     ),
-    createNewElement('button', ['randomize'], 'Randomize'),
-    createNewElement('button', ['start'], 'Start')
+    randomize,
+    start
   );
 
-  body.append(shipPlacing);
-
-  document.querySelector('main').style.display = 'none';
+  document.querySelector('body').append(shipScreen);
 
   /* Create blank board */
   const board = createNewElement('div', ['drag-board']);
@@ -279,10 +288,39 @@ export function renderShipPlacing(gameboard) {
     }
   }
 
-  shipPlacing.insertBefore(board, document.querySelector('.randomize'));
+  // I forget why I did this
+  shipScreen.insertBefore(board, document.querySelector('.randomize'));
 
-  placeDraggableShips(gameboard);
+  generateDraggableShips(gameboard);
   dragDropEventListeners(gameboard);
+
+  /* Game flow event listeners on buttons */
+  randomize.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    gameboard.clearBoard();
+    gameboard.placeAllShipsRandomly();
+    clearDOMBoard();
+    generateDraggableShips(gameboard);
+  });
+
+  start.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    shipScreen.style.display = 'none';
+    document.querySelector('main').style.display = 'flex';
+    // document.querySelector('.title').classList.remove('hidden');
+    document.querySelector('html').classList.remove('dragging');
+
+
+  renderBoard(gameboard.boardArray, 'own');
+
+  });
+}
+
+function clearDOMBoard() {
+  const ships = document.querySelectorAll('.draggable-ship');
+  ships.forEach((ship) => {
+    ship.parentElement.removeChild(ship);
+  });
 }
 
 function dragDropEventListeners(gameboard) {
@@ -341,7 +379,7 @@ function dragDropEventListeners(gameboard) {
     }
   });
 
-  // Touch events
+  // Touch drag and drop
   const dragBoard = document.querySelector('.drag-board');
   let initialPos;
   let dragging = false;
@@ -412,7 +450,7 @@ function dragDropEventListeners(gameboard) {
 }
 
 /* Put draggable elements at each ship location */
-function placeDraggableShips(gameboard) {
+function generateDraggableShips(gameboard) {
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
       const value = gameboard.boardArray[i][j];

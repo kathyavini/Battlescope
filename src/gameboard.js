@@ -171,7 +171,14 @@ export default function createGameboard() {
   }
 
   function clearShipFromFleet(type) {
-    fleet = fleet.filter(x => x.type !== type)
+    fleet = fleet.filter((x) => x.type !== type);
+  }
+
+  function clearBoard() {
+    fleet = [];
+    boardArray = Array(10)
+      .fill(null)
+      .map((x) => Array(10).fill(null));
   }
 
   return {
@@ -190,5 +197,6 @@ export default function createGameboard() {
     isShipLegal,
     clearShipFromBoard,
     clearShipFromFleet,
+    clearBoard,
   };
 }

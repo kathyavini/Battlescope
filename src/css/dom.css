@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* border: 1px solid yellowgreen; */
 }
 
 html {
@@ -129,15 +130,11 @@ h1 {
     border: 1px solid var(--dark4);
 }
 
-.square:hover {
-    background-color: var(--sea-green);
-    opacity: 0.5;
-}
-
-/* Disabled during drag and drop */
-.square.no-hover:hover {
-    background-color: transparent;
-    opacity: 1;
+@media (hover: hover) {
+    .enemy .square:hover {
+        background-color: var(--sea-green);
+        opacity: 0.5;
+    }
 }
 
 .square:active {
@@ -175,6 +172,7 @@ h1 {
     column-gap: 10px;
     margin-top: 20px;
     margin-bottom: 100px;
+    order: 2;
 }
 
 .ship-render {
@@ -259,4 +257,10 @@ h1 {
 .enemy-board .square.ship.hit.c.sunk,
 .ship-render.c {
     background-image: var(--hit-gradient), url("../svg/octopus.svg");
+}
+
+.game-announce button {
+    display: block;
+    font-size: 1rem;
+    margin-inline: auto;
 }
