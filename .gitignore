@@ -1,5 +1,5 @@
 .eslintrc.json
-dist/main.css
-dist/main.js
+# dist/main.css
+# dist/main.js
 coverage/
 .vscode/

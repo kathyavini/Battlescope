@@ -55,15 +55,25 @@ export function renderShipScreen(gameboard) {
     placeDraggableShips(gameboard);
   });
 
-  start.addEventListener('click', (ev) => {
-    ev.preventDefault();
-    shipScreen.parentElement.removeChild(shipScreen);
-    document.querySelector('main').style.display = 'flex';
-    document.querySelector('html').classList.remove('dragging');
-
-    // This maybe should be refactored into game.js
-    renderBoard(gameboard.boardArray, 'own');
+  return new Promise((resolve) => {
+    start.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      shipScreen.parentElement.removeChild(shipScreen);
+      document.querySelector('main').style.display = 'flex';
+      document.querySelector('html').classList.remove('dragging');
+      resolve(true);
+    });
   });
+
+  // start.addEventListener('click', (ev) => {
+  //   ev.preventDefault();
+  //   shipScreen.parentElement.removeChild(shipScreen);
+  //   document.querySelector('main').style.display = 'flex';
+  //   document.querySelector('html').classList.remove('dragging');
+
+  //   // This maybe should be refactored into game.js
+  //   renderBoard(gameboard.boardArray, 'own');
+  // });
 }
 
 function listenForDragDropEvents(gameboard) {
@@ -102,7 +112,7 @@ function listenForDragDropEvents(gameboard) {
       const type = thisDragElement.dataset.type;
       const orientation = thisDragElement.dataset.orientation;
 
-    //   console.log(coords, type, orientation);
+      //   console.log(coords, type, orientation);
 
       try {
         gameboard.isShipLegal(type, length, orientation, coords);
@@ -136,7 +146,6 @@ function listenForTouchEvents(gameboard) {
     initialPos = [ev.touches[0].clientX, ev.touches[0].clientY];
   });
 
-
   dragBoard.addEventListener('touchmove', (ev) => {
     if (thisDragElement) {
       thisDragElement.style.opacity = '0.5';
@@ -168,7 +177,7 @@ function listenForTouchEvents(gameboard) {
           const type = thisDragElement.dataset.type;
           const orientation = thisDragElement.dataset.orientation;
 
-        //   console.log(coords, type, orientation);
+          //   console.log(coords, type, orientation);
 
           try {
             gameboard.isShipLegal(type, length, orientation, coords);
@@ -232,7 +241,7 @@ function placeDraggableShips(gameboard) {
           const type = draggable.dataset.type;
           const length = draggable.dataset.length;
 
-        //   console.log(coords, type, newOrientation);
+          //   console.log(coords, type, newOrientation);
 
           try {
             gameboard.isShipLegal(type, length, newOrientation, coords);

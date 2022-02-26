@@ -48,7 +48,9 @@ export function newGame() {
 }
 
 function playerVsAILoop({ player1, player2, board1, board2 }) {
-  renderShipScreen(board1);
+  renderShipScreen(board1); // interesting that doing something with this promise is not necessary
+
+  renderBoard(board1.boardArray, 'own');
   renderBoard(board2.boardArray, 'enemy');
 
   // Make board clickable to human player
@@ -84,15 +86,14 @@ function playerVsAILoop({ player1, player2, board1, board2 }) {
   }
 }
 
-// TODO
-function twoPlayerGameLoop({ player1, player2, board1, board2 }) {
-  renderTurnScreen('PLAYER 1')
-  renderShipScreen(board1);
+async function twoPlayerGameLoop({ player1, player2, board1, board2 }) {
   
-  // renderTurnScreen('PLAYER 2')
-  // renderShipScreen(board2);
+  await renderTurnScreen('PLAYER 1').then(console.log)
+  await renderShipScreen(board1).then(console.log);
 
-  // // Make board clickable to both players
-  clickListener(player1, 'enemy');
-  // clickListener(player2, 'own');
+  await renderTurnScreen('PLAYER 2').then(console.log);
+  await renderShipScreen(board2).then(console.log);
+
+  // Game loop
+
 }

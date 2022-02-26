@@ -156,18 +156,6 @@ export default function createGameboard() {
         }
       }
     }
-
-    // Actually I'd love to know why this doesn't work
-
-    // boardArray.forEach(row => {
-    //   row.forEach(value => {
-    //     if (value && value[0] === type[0]) {
-    //       console.log(value)
-    //       value = null; // why aren't you setting?
-    //     }
-    //   })
-    // })
-    // console.log(boardArray);
   }
 
   function clearShipFromFleet(type) {

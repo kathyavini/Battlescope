@@ -178,7 +178,7 @@ export function makeAnnouncements() {
   }
 
   function endGame() {
-    // Collapse board announce panels 
+    // Collapse board announce panels
     for (const panel of announcePanels) {
       panel.style.display = 'none';
     }
@@ -209,7 +209,6 @@ export function makeAnnouncements() {
     sunkFleet.appendChild(shipRender);
   }
 }
-
 
 export function renderStartScreen() {
   const body = document.querySelector('body');
@@ -243,8 +242,7 @@ export function renderStartScreen() {
   return [player1, player2]; // to control game type from game module
 }
 
-
-export function renderTurnScreen(player) {
+export async function renderTurnScreen(player) {
   const body = document.querySelector('body');
   const readyButton = createNewElement('button', ['ready-button'], 'Ready');
 
@@ -260,8 +258,21 @@ export function renderTurnScreen(player) {
 
   body.append(turnScreen);
 
-  readyButton.addEventListener('click', (ev) => {
-    ev.preventDefault();
-    turnScreen.style.display = 'none';
+    return new Promise((resolve) => {
+      readyButton.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        turnScreen.parentElement.removeChild(turnScreen)
+        resolve(true);
+      });
   });
+
+  // readyButton.addEventListener('click', (ev) => {
+  //   ev.preventDefault();
+  //   turnScreen.style.display = 'none';
+  //   console.log(callback)
+  //   console.log(data)
+  //   callback(data);
+
+  //   return "ready"
+  // });
 }
