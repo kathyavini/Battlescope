@@ -39,8 +39,8 @@
   --secondary-font: 'IBM Plex Serif', serif;
 
   --hit-gradient: radial-gradient(transparent 30%, var(--sea-dark) 100%);
-  --background-gradient: radial-gradient(transparent 100%, var(--sea-dark) 100%);
-  /* --background-gradient: radial-gradient(transparent 60%, var(--sea-dark) 100%); */
+  /* --background-gradient: radial-gradient(transparent 100%, var(--sea-dark) 100%); */
+  --background-gradient: radial-gradient(transparent 60%, var(--sea-dark) 100%);
 }
 
 body {

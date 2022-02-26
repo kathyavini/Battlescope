@@ -3,11 +3,10 @@ import {
   makeAnnouncements,
   clickListener,
   renderBoard,
-  renderDragAndDropBoard,
   renderTurnScreen,
   renderStartScreen,
-  renderShipScreen,
 } from './dom';
+import { renderShipScreen } from './dragDrop';
 import createPlayer from './player';
 import createGameboard from './gameboard';
 import { subscribe, publish } from './pubsub';
@@ -27,60 +26,31 @@ export function newGame() {
   board1.placeAllShipsRandomly();
   board2.placeAllShipsRandomly();
 
-  // renderDragAndDropBoard(board1);
-  // renderBoardExperimental(board2, 'enemy');
-
   // Event listeners to track game events
   makeAnnouncements();
 
-  // Type of game:
+  // Event listeners to select type of game
+  const [singlePlayerButton, twoPlayerButton] = renderStartScreen();
 
-  
-  // demoMoves({ player1, player2, board1, board2 });
-  playerVsAILoop({ player1, player2, board1, board2 })
-  // twoPlayerGameLoop({ player1, player2, board1, board2 })
+  singlePlayerButton.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    document.querySelector('.start-screen').style.display = 'none';
 
+    playerVsAILoop({ player1, player2, board1, board2 });
+  });
 
-  renderTurnScreen();
-  renderStartScreen();
+  twoPlayerButton.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    document.querySelector('.start-screen').style.display = 'none';
 
+    twoPlayerGameLoop({ player1, player2, board1, board2 });
+  });
+}
+
+function playerVsAILoop({ player1, player2, board1, board2 }) {
   renderShipScreen(board1);
-  // renderBoard(board1.boardArray, 'own'); // called inside renderShipScreen when drag/dropping
   renderBoard(board2.boardArray, 'enemy');
-}
 
-// AI vs AI - Just for testing overall flow
-function demoMoves({ player1, player2, board1, board2 }) {
-  for (let i = 1; i < 101; i++) {
-    setTimeout(() => {
-      if (board2.isFleetSunk()) {
-        publish('fleetSunk', ['Player 2', 'Player 1']);
-        return;
-      } else if (board1.isFleetSunk()) {
-        publish('fleetSunk', ['Player 1', 'Player 2']);
-        return;
-      }
-      publish('targetChange', 'enemy');
-      player1.makeAttack(player1.aiSmartPlay());
-      renderBoard(board2.boardArray, 'enemy');
-
-      setTimeout(() => {
-        if (board2.isFleetSunk()) {
-          publish('fleetSunk', ['Player2', 'Player1']);
-          return;
-        } else if (board1.isFleetSunk()) {
-          publish('fleetSunk', ['Player1', 'Player2']);
-          return;
-        }
-        publish('targetChange', 'own');
-        player2.makeAttack(player2.aiSmartPlay());
-        renderBoard(board1.boardArray, 'own');
-      }, 25);
-    }, i * 50);
-  }
-}
-
-export function playerVsAILoop({ player1, player2, board1, board2 }) {
   // Make board clickable to human player
   clickListener(player1, 'enemy');
 
@@ -114,10 +84,15 @@ export function playerVsAILoop({ player1, player2, board1, board2 }) {
   }
 }
 
-export function twoPlayerGameLoop({ player1, player2, board1, board2 }) {
-  renderTurnScreen();
-}
+// TODO
+function twoPlayerGameLoop({ player1, player2, board1, board2 }) {
+  renderTurnScreen('PLAYER 1')
+  renderShipScreen(board1);
+  
+  // renderTurnScreen('PLAYER 2')
+  // renderShipScreen(board2);
 
-export function giveUp() {
-  console.log("it's been a rough coding day/night");
+  // // Make board clickable to both players
+  clickListener(player1, 'enemy');
+  // clickListener(player2, 'own');
 }

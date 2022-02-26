@@ -18,7 +18,7 @@
 }
 
 .turn-screen {
-    display: none;
+   z-index: 19; /* one less than start screen */
 }
 
 .turn-instructions,
@@ -93,6 +93,10 @@ button:active {
 .ship-screen {
     order: 2;
     text-align: center;
+}
+
+.play-again {
+    margin-block: 20px;
 }
 
 
