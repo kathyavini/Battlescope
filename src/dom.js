@@ -74,14 +74,17 @@ export function renderBoard(board, section) {
         continue;
       } else if (value === 'hit' || value === 'miss') {
         boardSquare.classList.add(value);
+        boardSquare.style.pointerEvents = 'none'; // necessary for the 2-player version where the boards are redrawn each turn
       } else if (value === 'sunk') {
         boardSquare.classList.add(value);
         boardSquare.classList.add('hit');
+        boardSquare.style.pointerEvents = 'none';
       } else {
         boardSquare.classList.add(value);
         boardSquare.classList.add('ship');
 
-        // Tag one square per (own) ship for showing the animal type
+        // Tag one square per (own) ship for showing the animal image
+        // Enemy ships show their animal type when they are sunk
         boardSquare.classList.add(`${value[0]}`);
 
         if (value[0] === 'b' && value[1] === '2') {
@@ -98,17 +101,29 @@ export function renderBoard(board, section) {
   }
 }
 
-function clickAttack(ev, player) {
-  publish('squareAttacked', [player, ev.target.dataset.pos]);
+export function clearBoards() {
+  // for two-player mode
+  const boards = document.querySelectorAll('.board');
+  for (const board of boards) {
+    board.innerHTML = '';
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        const div = createNewElement('div', ['square'], null, {
+          'data-pos': `${i}${j}`,
+        });
+        board.appendChild(div);
+      }
+    }
+  }
+}
 
-  // That square can no longer be targeted
-  ev.target.style.pointerEvents = 'none';
+export function swapSunkFleets() {
+  // For two player mode, where the boards are switched each turn
+  const ownBoardArea = document.querySelector(`.own .board-fleet`);
+  const enemyBoardArea = document.querySelector(`.enemy .board-fleet`);
 
-  // Time until next human click can be registered on any square
-  ev.target.parentElement.style.pointerEvents = 'none';
-  setTimeout(() => {
-    ev.target.parentElement.style.pointerEvents = 'initial';
-  }, 50);
+  enemyBoardArea.appendChild(document.querySelector(`.own .sunk-fleet`));
+  ownBoardArea.appendChild(document.querySelector(`.enemy .sunk-fleet`));
 }
 
 export function clickListener(player, section) {
@@ -120,6 +135,20 @@ export function clickListener(player, section) {
       clickAttack(ev, player);
     });
   });
+}
+
+function clickAttack(ev, player) {
+  // Gameboard consumes the event emitted here
+  publish('squareAttacked', [player, ev.target.dataset.pos]);
+
+  // That square can no longer be targeted
+  ev.target.style.pointerEvents = 'none';
+
+  // Time until next human click can be registered on any square
+  ev.target.parentElement.style.pointerEvents = 'none';
+  setTimeout(() => {
+    ev.target.parentElement.style.pointerEvents = 'initial';
+  }, 50);
 }
 
 export function makeAnnouncements() {
@@ -258,21 +287,11 @@ export async function renderTurnScreen(player) {
 
   body.append(turnScreen);
 
-    return new Promise((resolve) => {
-      readyButton.addEventListener('click', (ev) => {
-        ev.preventDefault();
-        turnScreen.parentElement.removeChild(turnScreen)
-        resolve(true);
-      });
+  return new Promise((resolve) => {
+    readyButton.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      turnScreen.parentElement.removeChild(turnScreen);
+      resolve(true);
+    });
   });
-
-  // readyButton.addEventListener('click', (ev) => {
-  //   ev.preventDefault();
-  //   turnScreen.style.display = 'none';
-  //   console.log(callback)
-  //   console.log(data)
-  //   callback(data);
-
-  //   return "ready"
-  // });
 }

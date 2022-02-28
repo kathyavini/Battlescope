@@ -5,11 +5,13 @@ import {
   renderBoard,
   renderTurnScreen,
   renderStartScreen,
+  clearBoards,
+  swapSunkFleets
 } from './dom';
 import { renderShipScreen } from './dragDrop';
 import createPlayer from './player';
 import createGameboard from './gameboard';
-import { subscribe, publish } from './pubsub';
+import { subscribe, publish, unsubscribe } from './pubsub';
 
 export function newGame() {
   createContainers();
@@ -47,9 +49,8 @@ export function newGame() {
   });
 }
 
-function playerVsAILoop({ player1, player2, board1, board2 }) {
-  renderShipScreen(board1); // interesting that doing something with this promise is not necessary
-
+async function playerVsAILoop({ player1, player2, board1, board2 }) {
+  await renderShipScreen(board1);
   renderBoard(board1.boardArray, 'own');
   renderBoard(board2.boardArray, 'enemy');
 
@@ -80,20 +81,102 @@ function playerVsAILoop({ player1, player2, board1, board2 }) {
         publish('fleetSunk', ['Human', 'Computer']);
         return;
       }
-
-      setTimeout(() => {}, 1500);
     }, 1000);
   }
 }
 
 async function twoPlayerGameLoop({ player1, player2, board1, board2 }) {
-  
-  await renderTurnScreen('PLAYER 1').then(console.log)
-  await renderShipScreen(board1).then(console.log);
+  await renderTurnScreen('PLAYER 1');
+  await renderShipScreen(board1);
 
-  await renderTurnScreen('PLAYER 2').then(console.log);
-  await renderShipScreen(board2).then(console.log);
+  await renderTurnScreen('PLAYER 2');
+  await renderShipScreen(board2);
 
-  // Game loop
+  await playerTurn(board1, board2, player1, player2, 'Player 1', 'Player 2');
 
+  // CSS selectors need adjusting in this loop due to the
+  // boards being cleared between each turn
+  document.querySelector('main').classList.add('two-player');
 }
+
+async function playerTurn(
+  ownBoard,
+  enemyBoard,
+  thisPlayer,
+  nextPlayer,
+  thisPlayerStr,
+  nextPlayerStr
+) {
+  let numAttacks = 0;
+
+  clearBoards();
+  swapSunkFleets();
+
+  // Controls where hits/misses are announced and sunk ships shown
+  publish('targetChange', 'enemy');
+
+  renderBoard(ownBoard.boardArray, 'own');
+  renderBoard(enemyBoard.boardArray, 'enemy');
+
+  clickListener(thisPlayer, 'enemy');
+
+  subscribe('squareAttacked', playerAttack);
+
+  function playerAttack([player, target]) {
+    player.makeAttack([target[0], target[1]]);
+
+    renderBoard(enemyBoard.boardArray, 'enemy');
+
+    if (enemyBoard.isFleetSunk()) {
+      publish('fleetSunk', ['Computer', 'Human']);
+      return;
+    }
+    numAttacks++;
+
+    if (numAttacks === 3) {
+      numAttacks = 0;
+      unsubscribe('squareAttacked', playerAttack);
+
+      setTimeout(() => {
+        changePlayer(
+          ownBoard,
+          enemyBoard,
+          thisPlayer,
+          nextPlayer,
+          thisPlayerStr,
+          nextPlayerStr
+        );
+      }, 1000);
+    }
+  }
+}
+
+async function changePlayer(
+  ownBoard,
+  enemyBoard,
+  thisPlayer,
+  nextPlayer,
+  thisPlayerStr,
+  nextPlayerStr
+) {
+  await renderTurnScreen(nextPlayerStr);
+
+  playerTurn(
+    enemyBoard,
+    ownBoard,
+    nextPlayer,
+    thisPlayer,
+    nextPlayerStr,
+    thisPlayerStr
+  );
+}
+
+// function clearRenderedBoards() {
+//   let emptyBoard = Array(10)
+//     .fill(null)
+//     .map((x) => Array(10).fill(null));
+//   console.log("The empty board I'm passing is:")
+//   console.log(emptyBoard)
+//   renderBoard(emptyBoard, 'enemy');
+//   renderBoard(emptyBoard, 'own');
+// }

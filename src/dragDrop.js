@@ -1,10 +1,9 @@
 import { createNewElement } from './utils';
-import { renderBoard } from './dom';
 
 export function renderShipScreen(gameboard) {
   document.querySelector('main').style.display = 'none';
 
-  // Hide title and disable overflow on mobile
+  // Hides title and disables overflow on mobile
   document.querySelector('.title').classList.add('hidden');
   document.querySelector('html').classList.add('dragging');
 
@@ -64,43 +63,34 @@ export function renderShipScreen(gameboard) {
       resolve(true);
     });
   });
-
-  // start.addEventListener('click', (ev) => {
-  //   ev.preventDefault();
-  //   shipScreen.parentElement.removeChild(shipScreen);
-  //   document.querySelector('main').style.display = 'flex';
-  //   document.querySelector('html').classList.remove('dragging');
-
-  //   // This maybe should be refactored into game.js
-  //   renderBoard(gameboard.boardArray, 'own');
-  // });
 }
 
 function listenForDragDropEvents(gameboard) {
   let thisDragElement;
-  document.addEventListener('dragstart', (ev) => {
+  const dragBoard = document.querySelector('.drag-board');
+  dragBoard.addEventListener('dragstart', (ev) => {
     thisDragElement = ev.target;
   });
 
-  document.addEventListener('dragenter', (ev) => {
+  dragBoard.addEventListener('dragenter', (ev) => {
     if (ev.target.className === 'drag-square') {
       ev.target.style.backgroundColor = 'purple';
     }
   });
 
-  document.addEventListener('dragleave', (ev) => {
+  dragBoard.addEventListener('dragleave', (ev) => {
     if (ev.target.className === 'drag-square') {
       ev.target.style.backgroundColor = '';
     }
   });
 
-  document.addEventListener('dragover', (ev) => {
+  dragBoard.addEventListener('dragover', (ev) => {
     // MDN says this is necessary to allow drop
     ev.preventDefault();
   });
 
   // Drag and drop to update position
-  document.addEventListener('drop', (ev) => {
+  dragBoard.addEventListener('drop', (ev) => {
     ev.preventDefault();
 
     if (ev.target.className === 'drag-square') {
@@ -112,7 +102,7 @@ function listenForDragDropEvents(gameboard) {
       const type = thisDragElement.dataset.type;
       const orientation = thisDragElement.dataset.orientation;
 
-      //   console.log(coords, type, orientation);
+        // console.log(coords, type, orientation);
 
       try {
         gameboard.isShipLegal(type, length, orientation, coords);
@@ -177,7 +167,7 @@ function listenForTouchEvents(gameboard) {
           const type = thisDragElement.dataset.type;
           const orientation = thisDragElement.dataset.orientation;
 
-          //   console.log(coords, type, orientation);
+            // console.log(coords, type, orientation);
 
           try {
             gameboard.isShipLegal(type, length, orientation, coords);
@@ -241,7 +231,7 @@ function placeDraggableShips(gameboard) {
           const type = draggable.dataset.type;
           const length = draggable.dataset.length;
 
-          //   console.log(coords, type, newOrientation);
+            // console.log(coords, type, newOrientation);
 
           try {
             gameboard.isShipLegal(type, length, newOrientation, coords);
