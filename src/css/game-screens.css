@@ -1,0 +1,150 @@
+/* Drag and drop board */
+.drag-board {
+    width: 450px;
+    height: 450px;
+    display: grid;
+    grid-template-rows: repeat(10, 1fr);
+    grid-template-columns: repeat(10, 1fr);
+    border: 1px solid var(--white);
+    background-color: var(--sea-dark);
+    position: relative;
+    order: 1;
+}
+
+.drag-board {
+    margin-inline: auto;
+    margin-top: 4vh;
+    margin-bottom: 3vh;
+}
+
+.draggable-ship.ship-render {
+    height: 45px;
+    position: absolute;
+    display: flex;
+    z-index: 10;
+    transform-origin: 22px 22px;
+    outline: 2px solid var(--accent3);
+    outline-offset: -1px;
+    transform: translate(-1px, -1px);
+    will-change: transform, opacity;
+    border: none;
+}
+
+.draggable-ship.rotated {
+    transform: rotate(90deg);
+}
+
+.draggable-ship .ship-part {
+    background-color: transparent;
+    outline: 1px solid var(--light3);
+    outline-offset: -1px;
+    width: 45px;
+    height: 45px;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.drag-square {
+    border: 1px solid var(--dark4);
+}
+
+/* Start screen and two player mode turn screen */
+.turn-screen,
+.start-screen {
+    width: 100vw;
+    min-height: 100%;
+    z-index: 10;
+    background-color: var(--dark1);
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    place-items: center;
+    gap: 10vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-top: 10vh;
+    text-align: center;
+}
+
+.turn-screen {
+   z-index: 19; /* one less than start screen */
+}
+
+.turn-instructions,
+.directions {
+    width: 85%;
+    max-width: 800px;
+    margin-inline: auto;
+    color: var(--accent2);
+}
+
+.ship-subtitle {
+    color: var(--accent6);
+}
+
+
+.start-screen {
+    z-index: 20;
+    display: block;
+    padding-top: 5vh;
+}
+
+.start-title {
+    font-size: 2.5rem;
+}
+
+.scope {
+    background-image: url('../svg/scope.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 2.5rem;
+    width: 5rem;
+    margin-inline: auto;
+}
+
+
+.start-subtitle {
+    color: var(--accent6);
+}
+
+.start-screen button,
+.ship-screen button {
+    font-size: 1rem;
+    margin: 20px;
+}
+
+button {
+    min-width: max-content;
+    font-family: var(--main-font);
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--white);
+    width: 200px;
+    display: inline-block;
+    background-color: transparent;
+    border: 3px var(--white) solid;
+    border-radius: 10px;
+    padding: 20px 40px 20px 40px;
+    text-transform: uppercase;
+    transition: 400ms;
+}
+
+button:hover {
+    background-color: var(--white);
+    color: var(--black);
+}
+  
+button:active {
+    filter: brightness(2);
+}
+
+
+.ship-screen {
+    order: 2;
+    text-align: center;
+}
+
+.play-again {
+    margin-block: 20px;
+}

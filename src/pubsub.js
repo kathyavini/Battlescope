@@ -6,7 +6,6 @@ Repo: https://github.com/prof3ssorSt3v3/pubsub-demo */
 const events = {};
 
 export function getEvents() {
-  // for testing suite
   return { ...events };
 }
 

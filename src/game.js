@@ -92,6 +92,7 @@ async function twoPlayerGameLoop({ player1, player2, board1, board2 }) {
   await renderTurnScreen('PLAYER 2');
   await renderShipScreen(board2);
 
+  await renderTurnScreen('PLAYER 1');
   await playerTurn(board1, board2, player1, player2, 'Player 1', 'Player 2');
 
   // CSS selectors need adjusting in this loop due to the
@@ -133,7 +134,7 @@ async function playerTurn(
     }
     numAttacks++;
 
-    if (numAttacks === 3) {
+    if (numAttacks === 5) {
       numAttacks = 0;
       unsubscribe('squareAttacked', playerAttack);
 

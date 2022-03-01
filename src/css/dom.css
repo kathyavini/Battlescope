@@ -79,8 +79,7 @@ h1 {
     flex: 0;
 }
 
-.board,
-.drag-board {
+.board {
     width: 450px;
     height: 450px;
     display: grid;
@@ -125,11 +124,11 @@ h1 {
     z-index: -1;
 }
 
-.square,
-.drag-square {
+.square {
     border: 1px solid var(--dark4);
 }
 
+/* This effect should not apply to mobile as it persists confusingly */
 @media (hover: hover) {
     .enemy .square:hover {
         background-color: var(--sea-green);

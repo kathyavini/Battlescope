@@ -1,5 +1,6 @@
 import './css/colors-and-fonts.css';
 import './css/dom.css';
+import './css/game-screens.css';
 import './css/mobile.css';
 import { createNewElement } from './utils';
 import { subscribe, publish } from './pubsub';
@@ -84,7 +85,7 @@ export function renderBoard(board, section) {
         boardSquare.classList.add('ship');
 
         // Tag one square per (own) ship for showing the animal image
-        // Enemy ships show their animal type when they are sunk
+        // Enemy ships show their animal type when class sunk is applied
         boardSquare.classList.add(`${value[0]}`);
 
         if (value[0] === 'b' && value[1] === '2') {
@@ -101,8 +102,8 @@ export function renderBoard(board, section) {
   }
 }
 
+// For two-player mode, where the boards are cleared and swapped each turn/device pass
 export function clearBoards() {
-  // for two-player mode
   const boards = document.querySelectorAll('.board');
   for (const board of boards) {
     board.innerHTML = '';
@@ -118,7 +119,6 @@ export function clearBoards() {
 }
 
 export function swapSunkFleets() {
-  // For two player mode, where the boards are switched each turn
   const ownBoardArea = document.querySelector(`.own .board-fleet`);
   const enemyBoardArea = document.querySelector(`.enemy .board-fleet`);
 
@@ -183,7 +183,8 @@ export function makeAnnouncements() {
   subscribe('fleetSunk', endGame);
   subscribe('shipSunk', renderSunkShip);
 
-  // These functions used to announce hit locations as well; for now leaving location data here in case that is re-implemented
+  // These functions used to announce hit locations as well
+  // for now leaving location data as a parameter here in case that is re-implemented
   function announceHit([row, column]) {
     panel.classList.add('visible');
     panel.classList.add('hit');
@@ -260,7 +261,7 @@ export function renderStartScreen() {
     createNewElement(
       'p',
       ['directions'],
-      "DIRECTIONS: Explore your opponent's ocean with your underwater scope. The first to spot all five sea creatures wins! In 2-PLAYER-MODE each turn grants three scope attempts."
+      "DIRECTIONS: Explore your opponent's ocean with your underwater scope. The first to spot all five sea creatures wins! In 2-PLAYER-MODE each turn grants five scope attempts."
     ),
     player1,
     player2
