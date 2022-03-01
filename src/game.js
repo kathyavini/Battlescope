@@ -170,13 +170,3 @@ async function changePlayer(
     thisPlayerStr
   );
 }
-
-// function clearRenderedBoards() {
-//   let emptyBoard = Array(10)
-//     .fill(null)
-//     .map((x) => Array(10).fill(null));
-//   console.log("The empty board I'm passing is:")
-//   console.log(emptyBoard)
-//   renderBoard(emptyBoard, 'enemy');
-//   renderBoard(emptyBoard, 'own');
-// }

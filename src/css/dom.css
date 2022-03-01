@@ -151,7 +151,8 @@ h1 {
     background-color: var(--light1);
 }
 
-.square.ship.hit {
+.square.ship.hit,
+.two-player .square.hit {
     background-color: var(--sea-light);
 }
 
@@ -191,7 +192,8 @@ h1 {
     height: 40px;
 }
 
-.square.ship.hit {
+.square.ship.hit,
+.two-player .square.hit {
     background-image: var(--hit-gradient);
 }
 
