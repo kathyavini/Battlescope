@@ -60,6 +60,7 @@ export function renderShipScreen(gameboard) {
       shipScreen.parentElement.removeChild(shipScreen);
       document.querySelector('main').style.display = 'flex';
       document.querySelector('html').classList.remove('dragging');
+      document.querySelector('.title').classList.remove('hidden');
       resolve(true);
     });
   });
@@ -69,6 +70,8 @@ function listenForDragDropEvents(gameboard) {
   let thisDragElement;
   const dragBoard = document.querySelector('.drag-board');
   dragBoard.addEventListener('dragstart', (ev) => {
+    ev.dataTransfer.effectAllowed = "move"; // To get rid of the green plus icon in Chrome
+    ev.dataTransfer.dropEffect = "move";
     thisDragElement = ev.target;
   });
 
@@ -110,7 +113,6 @@ function listenForDragDropEvents(gameboard) {
 
         updateGameboard(gameboard, type, coords, orientation);
 
-        thisDragElement.parentNode.removeChild(thisDragElement);
         ev.target.appendChild(thisDragElement);
 
         thisDragElement.dataset.pos = ev.target.dataset.pos;
@@ -175,7 +177,6 @@ function listenForTouchEvents(gameboard) {
 
             updateGameboard(gameboard, type, coords, orientation);
 
-            thisDragElement.parentNode.removeChild(thisDragElement);
             cornerDiv.appendChild(thisDragElement);
 
             thisDragElement.dataset.pos = cornerDiv.dataset.pos;

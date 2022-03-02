@@ -6,7 +6,8 @@ import {
   renderTurnScreen,
   renderStartScreen,
   clearBoards,
-  swapSunkFleets
+  swapSunkFleets,
+  reMarkSunkShips
 } from './dom';
 import { renderShipScreen } from './dragDrop';
 import createPlayer from './player';
@@ -93,7 +94,7 @@ async function twoPlayerGameLoop({ player1, player2, board1, board2 }) {
   await renderShipScreen(board2);
 
   await renderTurnScreen('PLAYER 1');
-  await playerTurn(board1, board2, player1, player2, 'Player 1', 'Player 2');
+  await playerTurn(board1, board2, player1, player2, 'PLAYER 1', 'PLAYER 2');
 
   // CSS selectors need adjusting in this loop due to the
   // boards being cleared between each turn
@@ -112,6 +113,7 @@ async function playerTurn(
 
   clearBoards();
   swapSunkFleets();
+  reMarkSunkShips();
 
   // Controls where hits/misses are announced and sunk ships shown
   publish('targetChange', 'enemy');
@@ -129,7 +131,7 @@ async function playerTurn(
     renderBoard(enemyBoard.boardArray, 'enemy');
 
     if (enemyBoard.isFleetSunk()) {
-      publish('fleetSunk', ['Computer', 'Human']);
+      publish('fleetSunk', [nextPlayerStr, thisPlayerStr]);
       return;
     }
     numAttacks++;

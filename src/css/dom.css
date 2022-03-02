@@ -91,38 +91,6 @@ h1 {
     order: 1;
 }
 
-.drag-board {
-    margin-inline: auto;
-    margin-top: 4vh;
-    margin-bottom: 3vh;
-}
-
-.draggable-ship.ship-render {
-    height: 45px;
-    position: absolute;
-    display: flex;
-    z-index: 10;
-    transform-origin: 22px 22px;
-    outline: 2px solid var(--accent3);
-    outline-offset: -1px;
-    transform: translate(-1px, -1px);
-    will-change: transform, opacity;
-    border: none;
-}
-
-.draggable-ship.rotated {
-    transform: rotate(90deg);
-}
-
-.draggable-ship .ship-part {
-    background-color: transparent;
-    outline: 1px solid var(--light3);
-    outline-offset: -1px;
-    width: 45px;
-    height: 45px;
-    pointer-events: none;
-    z-index: -1;
-}
 
 .square {
     border: 1px solid var(--dark4);

@@ -75,7 +75,10 @@ export function renderBoard(board, section) {
         continue;
       } else if (value === 'hit' || value === 'miss') {
         boardSquare.classList.add(value);
-        boardSquare.style.pointerEvents = 'none'; // necessary for the 2-player version where the boards are redrawn each turn
+
+        // This is necessary only for the 2-player version where the boards are redrawn each turn; the square is disabled upon attack
+        boardSquare.style.pointerEvents = 'none'; 
+
       } else if (value === 'sunk') {
         boardSquare.classList.add(value);
         boardSquare.classList.add('hit');
@@ -124,6 +127,23 @@ export function swapSunkFleets() {
 
   enemyBoardArea.appendChild(document.querySelector(`.own .sunk-fleet`));
   ownBoardArea.appendChild(document.querySelector(`.enemy .sunk-fleet`));
+}
+
+// In the 1-player version, data about which kind of ship has been sunk is stored in classes on the board; in the 2-player version,  the boards are cleared each turn so the data is stored on the sunk fleet div and the classes reapplied to the board upon each turn
+export function reMarkSunkShips() {
+  const sections = ['own', 'enemy'];
+  for (const section of sections) {
+    const mySunkShips = document.querySelectorAll(`.${section} .sunk-fleet .ship-render`)
+    if (mySunkShips) {
+      for (const ship of mySunkShips) {
+        const loc = ship.dataset.loc;
+        const type = ship.dataset.type[0];
+        const sunkSquare = document.querySelector(`.${section} [data-pos="${loc}"`)
+        sunkSquare.classList.add(type, 'hit', 'ship', 'tagged');
+      }
+    }
+  }
+
 }
 
 export function clickListener(player, section) {
@@ -237,6 +257,10 @@ export function makeAnnouncements() {
     }
 
     sunkFleet.appendChild(shipRender);
+
+    // A very weird workaround to storying sunk ship data for the two player version where the boards are redrawn (in the 1-player this is stored in classes)
+    shipRender.dataset.loc = `${row}${column}`;
+    shipRender.dataset.type = hitShip.type;
   }
 }
 
