@@ -20,24 +20,26 @@
 .draggable-ship {
     will-change: transform, opacity;
     height: 45px;
+    width: auto;
     position: absolute;
     display: flex;
+    flex-direction: row;
     /* z-index: 10; */
-    transform-origin: 22px 22px;
     outline: 2px solid var(--accent3);
     outline-offset: -1px;
-    transform: translate(-1px, -1px);
     border: none;
 }
 
 .draggable-ship.rotated {
-    transform: rotate(90deg);
+    /* transform: rotate(90deg); */
+    flex-direction: column;
+    height: auto;
+    width: 45px;
 }
 
 .draggable-ship .ship-part {
     background-color: transparent;
     outline: 1px solid var(--light3);
-    outline-offset: -1px;
     width: 45px;
     height: 45px;
     pointer-events: none;

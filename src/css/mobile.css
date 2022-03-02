@@ -1,4 +1,4 @@
-@media screen and (max-width: 600px) {
+@media (hover: none) {
     html {
         min-height: 100%;
         min-width: 100%;
@@ -102,25 +102,30 @@
         margin-bottom: 2vh;
         margin-top: 3vh;
     }
-    
+
     .draggable-ship.ship-render {
+        will-change: transform, opacity;
         height: 30px;
+        width: auto;
         position: absolute;
+        display: flex;
         transform-origin: 15px 15px;
+        transform: translate(-1px, -1px);
     }
+    
+    .draggable-ship.rotated {
+        height: 30px;
+        width: auto;
+        flex-direction: row;
+        transform: rotate(90deg);
+    }
+
 
     .draggable-ship .ship-part {
         height: 30px;
         width: 30px;
     }
 
-    .draggable-ship.rotated {
-        transform: rotate(90deg);
-    }
-
-}
-
-@media (hover: none) {
     .board,
     .drag-board {
         touch-action: pinch-zoom;
