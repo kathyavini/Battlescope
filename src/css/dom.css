@@ -164,38 +164,38 @@ h1 {
     background-image: var(--hit-gradient);
 }
 
-.square.ship.tagged,
+.square.ship.animalIcon,
 .square.ship.sunk {
     background-size: cover;
     background-repeat: no-repeat;
 }
 
-.own-board .square.ship.tagged.p {
+.own-board .square.ship.animalIcon.p {
     background-image: var(--background-gradient), url("../svg/beta-fish.svg");
 }
 
-.own-board .square.ship.hit.p.tagged,
+.own-board .square.ship.hit.p.animalIcon,
 .enemy-board .square.ship.hit.p.sunk,
 .ship-render.p {
     background-image: var(--hit-gradient), url("../svg/beta-fish.svg");
 }
 
-.own-board .square.ship.tagged.s {
+.own-board .square.ship.animalIcon.s {
     background-image: var(--background-gradient), url("../svg/seahorse.svg");
 }
 
-.own-board .square.ship.hit.s.tagged,
+.own-board .square.ship.hit.s.animalIcon,
 .enemy-board .square.ship.hit.s.sunk,
 .ship-render.s {
     background-image: var(--hit-gradient), url("../svg/seahorse.svg");
 }
 
-.own-board .square.ship.tagged.d {
+.own-board .square.ship.animalIcon.d {
     background-image: var(--background-gradient), url("../svg/goldfish.svg");
     background-position: right;
 }
 
-.own-board .square.ship.hit.d.tagged,
+.own-board .square.ship.hit.d.animalIcon,
 .enemy-board .square.ship.hit.d.sunk,
 .ship-render.d {
     background-image: var(--hit-gradient), url("../svg/goldfish.svg");
@@ -206,23 +206,23 @@ h1 {
     background-position: center;
 }
 
-.own-board .square.ship.tagged.b{
+.own-board .square.ship.animalIcon.b{
     background-image: var(--background-gradient), url("../svg/pufferfish.svg");
 
 }
 
-.own-board .square.ship.hit.b.tagged,
+.own-board .square.ship.hit.b.animalIcon,
 .enemy-board .square.ship.hit.b.sunk,
 .ship-render.b  {
     background-image: var(--hit-gradient), url("../svg/pufferfish.svg");
 }
 
 
-.own-board .square.ship.tagged.c {
+.own-board .square.ship.animalIcon.c {
     background-image: var(--background-gradient), url("../svg/octopus.svg");
 }
 
-.own-board .square.ship.hit.c.tagged,
+.own-board .square.ship.hit.c.animalIcon,
 .enemy-board .square.ship.hit.c.sunk,
 .ship-render.c {
     background-image: var(--hit-gradient), url("../svg/octopus.svg");

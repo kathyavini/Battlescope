@@ -48,10 +48,19 @@ export function newGame() {
 
     twoPlayerGameLoop({ player1, player2, board1, board2 });
   });
+
+  return { // for testing
+    player1,
+    player2,
+    board1,
+    board2,
+  };
+  
 }
 
 async function playerVsAILoop({ player1, player2, board1, board2 }) {
   await renderShipScreen(board1);
+
   renderBoard(board1.boardArray, 'own');
   renderBoard(board2.boardArray, 'enemy');
 
@@ -68,7 +77,7 @@ async function playerVsAILoop({ player1, player2, board1, board2 }) {
     renderBoard(board2.boardArray, 'enemy');
 
     if (board2.isFleetSunk()) {
-      publish('fleetSunk', ['Computer', 'Human']);
+      publish('fleetSunk', { loser: 'Computer', winner: 'Human' });
       return;
     }
 
@@ -79,7 +88,7 @@ async function playerVsAILoop({ player1, player2, board1, board2 }) {
       renderBoard(board1.boardArray, 'own');
 
       if (board1.isFleetSunk()) {
-        publish('fleetSunk', ['Human', 'Computer']);
+        publish('fleetSunk', { loser: 'Human', winner: 'Computer' });
         return;
       }
     }, 1000);
@@ -131,7 +140,7 @@ async function playerTurn(
     renderBoard(enemyBoard.boardArray, 'enemy');
 
     if (enemyBoard.isFleetSunk()) {
-      publish('fleetSunk', [nextPlayerStr, thisPlayerStr]);
+      publish('fleetSunk', { loser: nextPlayerStr, winner: thisPlayerStr });
       return;
     }
     numAttacks++;

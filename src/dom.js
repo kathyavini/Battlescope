@@ -92,13 +92,13 @@ export function renderBoard(board, section) {
         boardSquare.classList.add(`${value[0]}`);
 
         if (value[0] === 'b' && value[1] === '2') {
-          boardSquare.classList.add('tagged');
+          boardSquare.classList.add('animalIcon');
         } else if (value[0] === 'c' && value[1] === '3') {
-          boardSquare.classList.add('tagged');
+          boardSquare.classList.add('animalIcon');
         } else if ((value[0] === 's' || value[0] === 'd') && value[1] === '2') {
-          boardSquare.classList.add('tagged');
+          boardSquare.classList.add('animalIcon');
         } else if (value[0] === 'p' && value[1] === '1') {
-          boardSquare.classList.add('tagged');
+          boardSquare.classList.add('animalIcon');
         }
       }
     }
@@ -139,7 +139,7 @@ export function reMarkSunkShips() {
         const loc = ship.dataset.loc;
         const type = ship.dataset.type[0];
         const sunkSquare = document.querySelector(`.${section} [data-pos="${loc}"`)
-        sunkSquare.classList.add(type, 'hit', 'ship', 'tagged');
+        sunkSquare.classList.add(type, 'hit', 'ship', 'animalIcon');
       }
     }
   }
